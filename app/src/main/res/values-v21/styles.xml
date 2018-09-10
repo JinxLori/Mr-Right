@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--该目录只能API21以上也就是安卓5.0及以上的系统才能访问-->
+<resources>
+    <!--设置状态栏透明的风格，继承APPTheme，并在AndroidMainFest.xml中给程序设置该主题-->
+    <style name="StatusBarTrasparentTheme" parent="AppTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+</resources>

@@ -20,6 +20,14 @@
     <string name="answer">提问题</string>
     <string name="serch">搜索</string>
 
+    <!--滑动菜单菜单选项-->
+    <string name="my_tiezi">我的帖子</string>
+    <string name="my_genpai">我的跟拍</string>
+    <string name="my_pinglun">我的评论</string>
+    <string name="my_zanguo">我的点赞</string>
+    <string name="my_shoucang">我的收藏</string>
+    <string name="my_lishi">浏览历史</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
