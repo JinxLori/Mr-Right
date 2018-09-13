@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.wsh666.mrright.R;
 import com.example.wsh666.mrright.adapter.MyPagerAdapter;
+import com.example.wsh666.mrright.util.ImageAndAddress;
 
 import java.util.ArrayList;
 
@@ -59,8 +60,10 @@ public class tab_find_Fragment extends Fragment implements View.OnClickListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tab_find_, container, false);
+        /*设置该view中的轮播图内容，必须放在view加载之前*/
+        setSlideShowContent();
 
+        View view = inflater.inflate(R.layout.fragment_tab_find_, container, false);
         initView(view);
         return view;
     }
@@ -86,7 +89,7 @@ public class tab_find_Fragment extends Fragment implements View.OnClickListener,
         //往ViewPager填充View，同时设置点击事件与页面切换事件
         listViews = new ArrayList<View>();
         LayoutInflater mInflater = getActivity().getLayoutInflater();
-        listViews.add(mInflater.inflate(R.layout.view_one, null));
+        listViews.add(mInflater.inflate(R.layout.view_huati, null));
         listViews.add(mInflater.inflate(R.layout.view_two, null));
 
         vpager_four.setAdapter(new MyPagerAdapter(listViews));
@@ -149,5 +152,25 @@ public class tab_find_Fragment extends Fragment implements View.OnClickListener,
     public void chageTextColor(){
         tv_one.setTextColor(getResources().getColor(R.color.black));
         tv_two.setTextColor(getResources().getColor(R.color.black));
+    }
+
+    /*设置该view中的轮播图内容，必须放在最前面*/
+    public void setSlideShowContent(){
+        ArrayList<ImageView> mImageViews;
+        mImageViews = new ArrayList<>();
+        ImageView view1 = new ImageView(getActivity());
+        view1.setBackgroundResource(R.drawable.test);
+        ImageView view2 = new ImageView(getActivity());
+        view2.setBackgroundResource(R.drawable.add);
+        ImageView view3 = new ImageView(getActivity());
+        view3.setBackgroundResource(R.drawable.test);
+        ImageView view4 = new ImageView(getActivity());
+        view4.setBackgroundResource(R.drawable.my_lishi);
+        mImageViews.add(view1);
+        mImageViews.add(view2);
+        mImageViews.add(view3);
+        mImageViews.add(view4);
+        ImageAndAddress imageAndAddress=ImageAndAddress.getInstance();
+        imageAndAddress.setImageViews(mImageViews);
     }
 }

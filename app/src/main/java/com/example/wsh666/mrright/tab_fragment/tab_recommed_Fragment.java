@@ -7,7 +7,6 @@ import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.wsh666.mrright.R;
 import com.example.wsh666.mrright.adapter.MyPagerAdapter;
@@ -91,13 +91,44 @@ public class tab_recommed_Fragment extends Fragment implements View.OnClickListe
         one = offset * 2 + bmpWidth;// 移动一页的偏移量,比如1->2,或者2->3
         two = one * 2;// 移动两页的偏移量,比如1直接跳3
 
+        /*初始化ViewPager的几个页面*/
+        LayoutInflater mInflater = getActivity().getLayoutInflater();
+        View view_one=mInflater.inflate(R.layout.view_one,null);
+        View view_two=mInflater.inflate(R.layout.view_two,null);
+        View view_three=mInflater.inflate(R.layout.view_three,null);
+
+        Button button1=(Button) view_one.findViewById(R.id.button1);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(),"aaa" , Toast.LENGTH_SHORT).show();
+            }
+        });
+        /*View view_two=LayoutInflater.from(getActivity()).inflate(R.layout.view_two,null);
+        Button button2=view_two.findViewById(R.id.button2);
+        Toast.makeText(getActivity(), button2.getText(), Toast.LENGTH_SHORT).show();
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("asd","b");
+            }
+        });
+        View view_three=LayoutInflater.from(getActivity()).inflate(R.layout.view_three,null);
+        Button button3=view_three.findViewById(R.id.button3);
+        Toast.makeText(getActivity(), button3.getText(), Toast.LENGTH_SHORT).show();
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("asd","c");
+            }
+        });*/
 
         //往ViewPager填充View，同时设置点击事件与页面切换事件
         listViews = new ArrayList<View>();
-        LayoutInflater mInflater = getActivity().getLayoutInflater();
-        listViews.add(mInflater.inflate(R.layout.view_one, null));
-        listViews.add(mInflater.inflate(R.layout.view_two, null));
-        listViews.add(mInflater.inflate(R.layout.view_three, null));
+        /*LayoutInflater mInflater = getActivity().getLayoutInflater();*/
+        listViews.add(view_one);
+        listViews.add(view_two);
+        listViews.add(view_three);
 
         vpager_four.setAdapter(new MyPagerAdapter(listViews));
         vpager_four.setCurrentItem(0);//设置ViewPager当前页，从0开始算
@@ -109,30 +140,6 @@ public class tab_recommed_Fragment extends Fragment implements View.OnClickListe
 
         vpager_four.addOnPageChangeListener(this);
 
-        View view_one=mInflater.inflate(R.layout.view_one,null);
-        Button button1=(Button) view_one.findViewById(R.id.button1);
-        button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.e("asd","a");
-            }
-        });
-        View view_two=LayoutInflater.from(getActivity()).inflate(R.layout.view_two,null);
-        Button button2=view_two.findViewById(R.id.button2);
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.e("asd","b");
-            }
-        });
-        View view_three=LayoutInflater.from(getActivity()).inflate(R.layout.view_three,null);
-        Button button3=view_three.findViewById(R.id.button3);
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.e("asd","c");
-            }
-        });
     }
 
     @Override

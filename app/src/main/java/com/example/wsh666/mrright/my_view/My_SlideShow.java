@@ -1,4 +1,4 @@
-package com.example.wsh666.mrright;
+package com.example.wsh666.mrright.my_view;
 
 import android.content.Context;
 import android.os.Handler;
@@ -16,6 +16,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.example.wsh666.mrright.R;
+import com.example.wsh666.mrright.util.ImageAndAddress;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -103,7 +106,7 @@ public class My_SlideShow extends FrameLayout {
         LayoutInflater.from(context).inflate(R.layout.slidsow, this, true);
         LinearLayout douLayout = (LinearLayout) findViewById(R.id.linearlatouy_slidsow);
         douLayout.removeAllViews();
-        //显示图片
+        /*//显示图片
         ImageView view1 = new ImageView(mContext);
         view1.setBackgroundResource(R.drawable.test);
         ImageView view2 = new ImageView(mContext);
@@ -115,7 +118,10 @@ public class My_SlideShow extends FrameLayout {
         mImageViews.add(view1);
         mImageViews.add(view2);
         mImageViews.add(view3);
-        mImageViews.add(view4);
+        mImageViews.add(view4);*/
+        /*得到图片，这里没有数据，但是在加载此页面之前应该调用setImageViews()方法来填充数据*/
+        ImageAndAddress imageAndAddress=ImageAndAddress.getInstance();
+        mImageViews=imageAndAddress.getImageViews();
         //小点
         for (int i = 0; i < mImageViews.size(); i++) {
             //初始化轮播图的点击监听事件

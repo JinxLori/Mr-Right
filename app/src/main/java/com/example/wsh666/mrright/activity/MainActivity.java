@@ -146,7 +146,6 @@ public class MainActivity extends AppCompatActivity
         my_name.setText("name");
         my_email.setText("email");
         head_image.setImageResource(R.drawable.test);
-
     }
 
 
@@ -226,7 +225,6 @@ public class MainActivity extends AppCompatActivity
                 /*设置动画*/
                 Animation animationOpen = AnimationUtils.loadAnimation(MainActivity.this, R.anim.button_rotate_open);
                 show_dialog.startAnimation(animationOpen);
-
                 setDialog();
                 break;
             /*dialog按钮点击事件*/
