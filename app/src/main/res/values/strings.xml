@@ -27,5 +27,31 @@
     <string name="my_zanguo">我的点赞</string>
     <string name="my_shoucang">我的收藏</string>
     <string name="my_lishi">浏览历史</string>
+    <string name="set">设置</string>
+    <string name="exit">登出</string>
 
+    <!--个人信息修改界面-->
+    <string name="gerenxinxi">个人信息</string>
+    <string name="i_name">昵称</string>
+    <string name="i_sex">性别</string>
+    <string name="i_birth">生日</string>
+    <string name="i_signature">个人签名</string>
+    <string name="clickToEdit">点击修改头像</string>
+    <string name="sex_man">男</string>
+    <string name="sex_woman">女</string>
+    <string name="edit_save">保存</string>
+    <string name="hint">这个人很懒，什么都没写~</string>
+
+    <!--发帖界面-->
+    <string name="writepost">发帖</string>
+    <string name="post">发布</string>
+    <string name="post_hint">分享快乐，汇集乐事~~~</string>
+    <string name="chose_topic">选择话题</string>
+
+    <!--个人信息界面-->
+    <string name="huozan">获赞</string>
+    <string name="fensi">粉丝</string>
+    <string name="tiezi">帖子</string>
+    <string name="genpai">跟拍</string>
+    <string name="pinglun">评论</string>
 </resources>

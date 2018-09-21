@@ -37,7 +37,7 @@ import java.util.ArrayList;
  * 　　7　　　　　　　|／
  * 　　＞―r￣￣`ｰ―＿
  */
-public class tab_find_Fragment extends Fragment implements View.OnClickListener,
+public class Tab_Find_Fragment extends Fragment implements View.OnClickListener,
         ViewPager.OnPageChangeListener{
 
 
@@ -52,7 +52,7 @@ public class tab_find_Fragment extends Fragment implements View.OnClickListener,
     private int bmpWidth;// 移动条图片的长度
     private int one = 0; //移动条滑动一页的距离
 
-    public tab_find_Fragment() {
+    public Tab_Find_Fragment() {
         // Required empty public constructor
     }
 
@@ -94,7 +94,7 @@ public class tab_find_Fragment extends Fragment implements View.OnClickListener,
 
         vpager_four.setAdapter(new MyPagerAdapter(listViews));
         vpager_four.setCurrentItem(0);          //设置ViewPager当前页，从0开始算
-        tv_one.setTextColor(getResources().getColor(R.color.colorAccent));
+        tv_one.setTextColor(getResources().getColor(R.color.white));
 
         tv_one.setOnClickListener(this);
         tv_two.setOnClickListener(this);
@@ -120,13 +120,13 @@ public class tab_find_Fragment extends Fragment implements View.OnClickListener,
         Animation animation = null;
         switch (index) {
             case 0:
-                tv_one.setTextColor(getResources().getColor(R.color.colorAccent));
+                tv_one.setTextColor(getResources().getColor(R.color.white));
                 if (currIndex == 1) {
                     animation = new TranslateAnimation(one, 0, 0, 0);
                 }
                 break;
             case 1:
-                tv_two.setTextColor(getResources().getColor(R.color.colorAccent));
+                tv_two.setTextColor(getResources().getColor(R.color.white));
                 if (currIndex == 0) {
                     animation = new TranslateAnimation(offset, one, 0, 0);
                 }

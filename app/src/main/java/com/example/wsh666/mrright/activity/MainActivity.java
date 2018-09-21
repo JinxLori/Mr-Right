@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -29,10 +30,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.wsh666.mrright.R;
-import com.example.wsh666.mrright.tab_fragment.tab_find_Fragment;
-import com.example.wsh666.mrright.tab_fragment.tab_message_Fragment;
-import com.example.wsh666.mrright.tab_fragment.tab_personal_Fragment;
-import com.example.wsh666.mrright.tab_fragment.tab_recommed_Fragment;
+import com.example.wsh666.mrright.tab_fragment.Tab_Find_Fragment;
+import com.example.wsh666.mrright.tab_fragment.Tab_Message_Fragment;
+import com.example.wsh666.mrright.tab_fragment.Tab_Personal_Fragment;
+import com.example.wsh666.mrright.tab_fragment.Tab_Recommed_Fragment;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -67,6 +68,8 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private Fragment f_recommed, f_find, f_message, f_personal;
 
+    private Fragment write_post_fragment;
+
     private Dialog mCameraDialog;
     private DrawerLayout drawer_layout;
     private NavigationView nav_view;
@@ -74,6 +77,8 @@ public class MainActivity extends AppCompatActivity
     private TextView my_name;
     private TextView my_email;
     private CircleImageView head_image;
+
+    private FrameLayout fill_fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,11 +111,10 @@ public class MainActivity extends AppCompatActivity
         tab_personal = (RadioButton) findViewById(R.id.tab_personal);
         bottom_bar = (RadioGroup) findViewById(R.id.bottom_bar);
         show_dialog = (ImageView) findViewById(R.id.show_dialog);
+        fill_fragment=(FrameLayout)findViewById(R.id.fill_fragment);
 
         drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        /*drawer_layout.setOnClickListener(this);*/
         nav_view = (NavigationView) findViewById(R.id.nav_view);
-        /*nav_view.setOnClickListener(this);*/
 
         bottom_bar.setOnCheckedChangeListener(this);
         show_dialog.setOnClickListener(this);
@@ -149,6 +153,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    /*RadioButton点击切换事件*/
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -156,7 +161,7 @@ public class MainActivity extends AppCompatActivity
         switch (checkedId) {
             case R.id.tab_recommed:
                 if (f_recommed == null) {
-                    f_recommed = new tab_recommed_Fragment();
+                    f_recommed = new Tab_Recommed_Fragment();
                     fragmentTransaction.add(R.id.frame, f_recommed);
                 } else {
                     fragmentTransaction.show(f_recommed);
@@ -164,7 +169,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.tab_find:
                 if (f_find == null) {
-                    f_find = new tab_find_Fragment();
+                    f_find = new Tab_Find_Fragment();
                     fragmentTransaction.add(R.id.frame, f_find);
                 } else {
                     fragmentTransaction.show(f_find);
@@ -172,7 +177,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.tab_message:
                 if (f_message == null) {
-                    f_message = new tab_message_Fragment();
+                    f_message = new Tab_Message_Fragment();
                     fragmentTransaction.add(R.id.frame, f_message);
                 } else {
                     fragmentTransaction.show(f_message);
@@ -180,7 +185,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.tab_personal:
                 if (f_personal == null) {
-                    f_personal = new tab_personal_Fragment();
+                    f_personal = new Tab_Personal_Fragment();
                     fragmentTransaction.add(R.id.frame, f_personal);
                 } else {
                     fragmentTransaction.show(f_personal);
@@ -229,7 +234,10 @@ public class MainActivity extends AppCompatActivity
                 break;
             /*dialog按钮点击事件*/
             case R.id.btn_share:
-                Toast.makeText(this, "发帖", Toast.LENGTH_SHORT).show();
+                mCameraDialog.dismiss();
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this,WritePostActivity.class);
+                startActivity(intent);
                 break;
             case R.id.btn_camare:
                 //选择照片按钮
@@ -240,7 +248,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(this, "提问", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_serch:
-                //取消按钮
+                //搜索按钮
                 Toast.makeText(this, "搜索", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.close_dialog:
@@ -285,5 +293,18 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
         return true;
+    }
+
+    /*全屏碎片加载*/
+    //动态添加碎片
+    public void replaceFragment(Fragment new_fragment, Fragment old_fragment) {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fill_fragment, new_fragment);
+        /*hide一下，再次返回此碎片的时候才能调用重写的方法来实现数据刷新*/
+        transaction.hide(old_fragment);
+        //模拟返回栈 防止退出碎片时也退出活动
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

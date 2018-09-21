@@ -38,7 +38,7 @@ import java.util.ArrayList;
 　　7　　　　　　　|／
 　　＞―r￣￣`ｰ―＿
  */
-public class tab_recommed_Fragment extends Fragment implements View.OnClickListener,
+public class Tab_Recommed_Fragment extends Fragment implements View.OnClickListener,
         ViewPager.OnPageChangeListener{
 
 
@@ -55,7 +55,7 @@ public class tab_recommed_Fragment extends Fragment implements View.OnClickListe
     private int one = 0; //移动条滑动一页的距离
     private int two = 0; //滑动条移动两页的距离
 
-    public tab_recommed_Fragment() {
+    public Tab_Recommed_Fragment() {
         // Required empty public constructor
     }
 
@@ -132,7 +132,7 @@ public class tab_recommed_Fragment extends Fragment implements View.OnClickListe
 
         vpager_four.setAdapter(new MyPagerAdapter(listViews));
         vpager_four.setCurrentItem(0);//设置ViewPager当前页，从0开始算
-        tv_one.setTextColor(getResources().getColor(R.color.colorAccent));
+        tv_one.setTextColor(getResources().getColor(R.color.white));
 
         tv_one.setOnClickListener(this);
         tv_two.setOnClickListener(this);
@@ -163,7 +163,7 @@ public class tab_recommed_Fragment extends Fragment implements View.OnClickListe
         Animation animation = null;
         switch (index) {
             case 0:
-                tv_one.setTextColor(getResources().getColor(R.color.colorAccent));
+                tv_one.setTextColor(getResources().getColor(R.color.white));
                 if (currIndex == 1) {
                     animation = new TranslateAnimation(one, 0, 0, 0);
                 } else if (currIndex == 2) {
@@ -171,7 +171,7 @@ public class tab_recommed_Fragment extends Fragment implements View.OnClickListe
                 }
                 break;
             case 1:
-                tv_two.setTextColor(getResources().getColor(R.color.colorAccent));
+                tv_two.setTextColor(getResources().getColor(R.color.white));
                 if (currIndex == 0) {
                     animation = new TranslateAnimation(offset, one, 0, 0);
                 } else if (currIndex == 2) {
@@ -179,7 +179,7 @@ public class tab_recommed_Fragment extends Fragment implements View.OnClickListe
                 }
                 break;
             case 2:
-                tv_three.setTextColor(getResources().getColor(R.color.colorAccent));
+                tv_three.setTextColor(getResources().getColor(R.color.white));
                 if (currIndex == 0) {
                     animation = new TranslateAnimation(offset, two, 0, 0);
                 } else if (currIndex == 1) {
@@ -205,9 +205,9 @@ public class tab_recommed_Fragment extends Fragment implements View.OnClickListe
 
     /*更改顶部选项字体颜色*/
     public void chageTextColor(){
-        tv_one.setTextColor(getResources().getColor(R.color.black));
-        tv_two.setTextColor(getResources().getColor(R.color.black));
-        tv_three.setTextColor(getResources().getColor(R.color.black));
+        tv_one.setTextColor(getResources().getColor(R.color.small_black));
+        tv_two.setTextColor(getResources().getColor(R.color.small_black));
+        tv_three.setTextColor(getResources().getColor(R.color.small_black));
     }
 
 }

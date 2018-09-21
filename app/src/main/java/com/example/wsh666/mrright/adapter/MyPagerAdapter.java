@@ -1,6 +1,7 @@
 package com.example.wsh666.mrright.adapter;
 
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -46,6 +47,13 @@ public class MyPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
+        View v=viewLists.get(position);
+        ViewGroup parent = (ViewGroup) v.getParent();
+        if (parent != null) {
+            Log.i("ViewPaperAdapter", parent.toString());
+            parent.removeAllViews();
+        }
+
         container.addView(viewLists.get(position));
         return viewLists.get(position);
     }

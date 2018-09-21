@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="45dp"
-        android:background="#FFFFFF">
+        android:background="@color/green">
 
         <TextView
             android:id="@+id/tv_one"
@@ -19,7 +19,7 @@
             android:layout_weight="1.0"
             android:gravity="center"
             android:text="@string/tuijian"
-            android:textColor="#000000" />
+            android:textColor="@color/small_black" />
 
         <TextView
             android:id="@+id/tv_two"
@@ -28,7 +28,7 @@
             android:layout_weight="1.0"
             android:gravity="center"
             android:text="@string/fenlei"
-            android:textColor="#000000" />
+            android:textColor="@color/small_black" />
 
         <TextView
             android:id="@+id/tv_three"
@@ -37,15 +37,16 @@
             android:layout_weight="1.0"
             android:gravity="center"
             android:text="@string/guanzhu"
-            android:textColor="#000000" />
+            android:textColor="@color/small_black" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/img_cursor"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="matrix"
-        android:src="@drawable/line" />
+        android:layout_marginTop="-8dp"
+        android:src="@drawable/white_line" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vpager_four"

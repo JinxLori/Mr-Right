@@ -27,4 +27,15 @@
             android:icon="@drawable/my_lishi"
             android:title="@string/my_lishi"/>
     </group>
+
+    <group
+        android:id="@+id/footer"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/set"
+            android:title="@string/set"/>
+        <item
+            android:id="@+id/exit"
+            android:title="@string/exit"/>
+    </group>
 </menu>

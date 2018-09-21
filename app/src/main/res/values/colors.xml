@@ -7,4 +7,12 @@
     <color name="black">#2c2c2c</color>
     <color name="transparent">#00000000</color>
     <color name="white">#ffffffff</color>
+    <color name="small_white">#BBBBBB</color>
+    <color name="small_black">#3C3F41</color>
+
+    <color name="primary_dark">#0097A7</color>
+    <color name="primary">#00BCD4</color>
+    <color name="primary_dark_t">#900097A7</color>
+
+    <color name="green">#4AAF4F</color>
 </resources>

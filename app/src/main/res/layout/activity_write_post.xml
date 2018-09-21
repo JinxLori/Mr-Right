@@ -1,0 +1,155 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:background="@color/green"
+    tools:context="com.example.wsh666.mrright.activity.WritePostActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+        <ImageView
+            android:id="@+id/fanhui"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="9dp"
+            android:src="@drawable/fanhui"
+            android:clickable="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/writepost"
+            android:layout_centerInParent="true"/>
+
+        <TextView
+            android:id="@+id/post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:text="@string/post"
+            android:textSize="18sp"
+            android:textColor="@color/primary"/>
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/edit_post"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@null"
+        android:gravity="top"
+        android:minLines="3"
+        android:hint="@string/post_hint"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <Button
+            android:id="@+id/chose_topic"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/circle_button"
+            android:layout_centerVertical="true"
+            android:text="@string/chose_topic"/>
+
+        <Button
+            android:id="@+id/select_image"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="@drawable/circle_button"
+            android:layout_centerInParent="true"
+            android:text="选择照片" />
+
+        <Button
+            android:id="@+id/clear_image"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="@drawable/circle_button"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="重选" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="10dp">
+
+        <TableLayout
+            android:id="@+id/image_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+            <TableRow>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:scaleType="centerCrop" />
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:scaleType="centerCrop"/>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:scaleType="centerCrop"/>
+            </TableRow>
+            <TableRow>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:scaleType="centerCrop"/>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:scaleType="centerCrop"/>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:scaleType="centerCrop"/>
+            </TableRow>
+            <TableRow>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:scaleType="centerCrop"/>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:scaleType="centerCrop"/>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:scaleType="centerCrop"/>
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+</LinearLayout>
