@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    android:background="@color/green"
     tools:context="com.example.wsh666.mrright.activity.WritePostActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:background="@color/green">
         <ImageView
             android:id="@+id/fanhui"
             android:layout_width="30dp"
@@ -33,7 +33,7 @@
             android:layout_marginEnd="10dp"
             android:text="@string/post"
             android:textSize="18sp"
-            android:textColor="@color/primary"/>
+            android:textColor="@color/white"/>
     </RelativeLayout>
 
     <EditText

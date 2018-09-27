@@ -104,24 +104,6 @@ public class Tab_Recommed_Fragment extends Fragment implements View.OnClickListe
                 Toast.makeText(getActivity(),"aaa" , Toast.LENGTH_SHORT).show();
             }
         });
-        /*View view_two=LayoutInflater.from(getActivity()).inflate(R.layout.view_two,null);
-        Button button2=view_two.findViewById(R.id.button2);
-        Toast.makeText(getActivity(), button2.getText(), Toast.LENGTH_SHORT).show();
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.e("asd","b");
-            }
-        });
-        View view_three=LayoutInflater.from(getActivity()).inflate(R.layout.view_three,null);
-        Button button3=view_three.findViewById(R.id.button3);
-        Toast.makeText(getActivity(), button3.getText(), Toast.LENGTH_SHORT).show();
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.e("asd","c");
-            }
-        });*/
 
         //往ViewPager填充View，同时设置点击事件与页面切换事件
         listViews = new ArrayList<View>();

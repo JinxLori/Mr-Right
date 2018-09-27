@@ -54,4 +54,20 @@
     <string name="tiezi">帖子</string>
     <string name="genpai">跟拍</string>
     <string name="pinglun">评论</string>
+    
+    <!--登录界面-->
+    <string name="login">登录</string>
+    <string name="forgetPwd">忘记密码？</string>
+    <string name="nameHint">请输入账号</string>
+    <string name="pwdHint">请输入密码</string>
+    <string name="register">注册</string>
+    <string name="yanzhengmalogin">验证码登录 ></string>
+    <string name="otherWayToLogin">其它方式登录</string>
+
+    <!--注册界面-->
+    <string name="phonenumHint">请输入手机号</string>
+    <string name="yanzhengmaHint">请输入验证码</string>
+    <string name="getYanzhengma">获取验证码</string>
+    <string name="miao">秒</string>
+    <string name="tongyi">注册即表示同意《隐私权声明》</string>
 </resources>

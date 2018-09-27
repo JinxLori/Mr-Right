@@ -2,6 +2,7 @@ package com.example.wsh666.mrright.tab_fragment;
 
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -21,10 +22,10 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.wsh666.mrright.R;
+import com.example.wsh666.mrright.activity.LoginActivity;
 import com.example.wsh666.mrright.activity.MainActivity;
 import com.example.wsh666.mrright.adapter.MyPagerAdapter;
 import com.example.wsh666.mrright.fragment.Edit_Information_Fragment;
@@ -201,7 +202,10 @@ public class Tab_Personal_Fragment extends Fragment implements View.OnClickListe
                 ((MainActivity) getActivity()).replaceFragment(editInformationFragment, this);
                 break;
             case R.id.personal_head_image:
-                Toast.makeText(getActivity(), "头像", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "头像", Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent();
+                intent.setClass(getActivity(), LoginActivity.class);
+                startActivity(intent);
                 break;
             case R.id.huozan:
 

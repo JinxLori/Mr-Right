@@ -241,14 +241,17 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.btn_camare:
                 //选择照片按钮
+                mCameraDialog.dismiss();
                 Toast.makeText(this, "发跟拍", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_answer:
                 //拍照按钮
+                mCameraDialog.dismiss();
                 Toast.makeText(this, "提问", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_serch:
                 //搜索按钮
+                mCameraDialog.dismiss();
                 Toast.makeText(this, "搜索", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.close_dialog:

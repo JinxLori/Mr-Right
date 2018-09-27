@@ -71,6 +71,12 @@
                 android:clickable="true"/>
 
         </LinearLayout>
+
+        <!--全屏碎片-->
+        <FrameLayout
+            android:id="@+id/fill_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </RelativeLayout>
 
     <android.support.design.widget.NavigationView
@@ -81,9 +87,4 @@
         app:menu="@menu/drawer_layout_menu"
         app:headerLayout="@layout/drawer_layout_header"/>
 
-    <!--全屏碎片-->
-    <FrameLayout
-        android:id="@+id/fill_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 </android.support.v4.widget.DrawerLayout>

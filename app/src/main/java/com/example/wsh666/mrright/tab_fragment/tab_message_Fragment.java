@@ -12,13 +12,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.wsh666.mrright.R;
 import com.example.wsh666.mrright.adapter.MyPagerAdapter;
+import com.example.wsh666.mrright.adapter.PersonalLetterListAdepter;
+import com.example.wsh666.mrright.adapter.RemindListAdepter;
+import com.example.wsh666.mrright.bean.PersonaLetter;
+import com.example.wsh666.mrright.bean.Remind;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created bywsh666 on 2018/9/9 15:19
@@ -83,12 +91,66 @@ public class Tab_Message_Fragment extends Fragment implements View.OnClickListen
         //移动的距离
         one = offset * 2 + bmpWidth;// 移动一页的偏移量,比如1->2,或者2->3
 
-        //往ViewPager填充View，同时设置点击事件与页面切换事件
-        listViews = new ArrayList<View>();
+        /*初始化ViewPager的几个页面*/
         LayoutInflater mInflater = getActivity().getLayoutInflater();
-        listViews.add(mInflater.inflate(R.layout.view_one, null));
-        listViews.add(mInflater.inflate(R.layout.view_two, null));
+        View view_tixing=mInflater.inflate(R.layout.view_tixing,null);
+        View view_sixin=mInflater.inflate(R.layout.view_sixin,null);
 
+        /*view_sixin 的响应事件*/
+        //数据填充
+        PersonaLetter p1=new PersonaLetter(R.drawable.test,"user1","2222","刚刚");
+        PersonaLetter p2=new PersonaLetter(R.drawable.test,"user1","2222","刚刚");
+        final List<PersonaLetter> personaLetterList = new ArrayList<>();
+        personaLetterList.add(p1);
+        personaLetterList.add(p2);
+        //适配器设置，点击事件设置
+        PersonalLetterListAdepter personalLetterListAdepter=new PersonalLetterListAdepter(personaLetterList,getActivity());
+        ListView sixin_listView = view_sixin.findViewById(R.id.sixinList);
+        sixin_listView.setAdapter(personalLetterListAdepter);
+        sixin_listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getActivity(),personaLetterList.get(i).getUsername() , Toast.LENGTH_SHORT).show();
+            }
+        });
+        sixin_listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getActivity(), "弹出菜单", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+        /*view_remind 响应事件*/
+        //数据填充
+        final List<Remind> remindList=new ArrayList<>();
+        Remind r1=new Remind(R.drawable.test,"user1","被操作的内容1");
+        Remind r2=new Remind(R.drawable.test,"user2","被操作的内容2");
+        remindList.add(r1);
+        remindList.add(r2);
+        //适配器设置
+        RemindListAdepter remindListAdapter=new RemindListAdepter(remindList,getActivity());
+        ListView remindListView=view_tixing.findViewById(R.id.tixingList);
+        remindListView.setAdapter(remindListAdapter);
+        remindListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getActivity(), remindList.get(i).getUsername(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        remindListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getActivity(), "弹出菜单", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+        /*往ViewPager填充View，同时设置点击事件与页面切换事件*/
+        listViews = new ArrayList<View>();
+        listViews.add(view_tixing);
+        listViews.add(view_sixin);
+        /*设置ViewPager的适配器*/
         vpager_four.setAdapter(new MyPagerAdapter(listViews));
         vpager_four.setCurrentItem(0);          //设置ViewPager当前页，从0开始算
         tv_one.setTextColor(getResources().getColor(R.color.white));
@@ -150,4 +212,6 @@ public class Tab_Message_Fragment extends Fragment implements View.OnClickListen
         tv_one.setTextColor(getResources().getColor(R.color.small_black));
         tv_two.setTextColor(getResources().getColor(R.color.small_black));
     }
+
+
 }
