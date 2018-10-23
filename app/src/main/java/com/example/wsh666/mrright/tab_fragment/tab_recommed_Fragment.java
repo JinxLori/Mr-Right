@@ -5,22 +5,31 @@ import android.app.Fragment;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.wsh666.mrright.R;
 import com.example.wsh666.mrright.adapter.MyPagerAdapter;
+import com.example.wsh666.mrright.adapter.PostListAdapter;
+import com.example.wsh666.mrright.bean.Post;
+import com.example.wsh666.mrright.util.Get_Data_FromWeb;
+import com.example.wsh666.mrright.util.String_Util;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created bywsh666 on 2018/9/8 13:49
@@ -54,6 +63,8 @@ public class Tab_Recommed_Fragment extends Fragment implements View.OnClickListe
     private int bmpWidth;// 移动条图片的长度
     private int one = 0; //移动条滑动一页的距离
     private int two = 0; //滑动条移动两页的距离
+
+    Handler mHandler;
 
     public Tab_Recommed_Fragment() {
         // Required empty public constructor
@@ -97,13 +108,47 @@ public class Tab_Recommed_Fragment extends Fragment implements View.OnClickListe
         View view_two=mInflater.inflate(R.layout.view_two,null);
         View view_three=mInflater.inflate(R.layout.view_three,null);
 
-        Button button1=(Button) view_one.findViewById(R.id.button1);
-        button1.setOnClickListener(new View.OnClickListener() {
+        /*第一个页面的控件处理*/
+        final List<Post> postList = new ArrayList<>();
+        ListView listView = (ListView) view_one.findViewById(R.id.post_list);
+        mHandler=new Handler(){
             @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(),"aaa" , Toast.LENGTH_SHORT).show();
+            public void handleMessage(Message msg)
+            {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case 1:
+                        Post post = new Post();
+                        post = (Post) msg.getData().getSerializable("msg");
+                        postList.add(post);
+                        break;
+                    default:
+                        break;
+                }
             }
-        });
+        };
+        PostListAdapter postListAdapter = new PostListAdapter(postList,getActivity());
+        listView.setAdapter(postListAdapter);
+        new Thread(){
+            @Override
+            public void run() {
+                Get_Data_FromWeb get_data_fromWeb = new Get_Data_FromWeb();
+                String jsonData = get_data_fromWeb.getData(String_Util.urlString+"GetPostByUserIdServlet?user_id="+ String_Util.userId);
+                Gson gson = new Gson();
+                List<Post> posts = gson.fromJson(jsonData,
+                        new TypeToken<List<Post>>() {}.getType());
+                for(Post post : posts) {
+                    Log.e("123" , post.toString());
+                    Message message=new Message();
+                    message.what=1;//判断是哪个handler的请求
+                    Bundle bundle=new Bundle();
+                    bundle.putSerializable("msg",post);
+                    message.setData(bundle);
+                    mHandler.sendMessage(message);
+                }
+            }
+        }.start();
+
 
         //往ViewPager填充View，同时设置点击事件与页面切换事件
         listViews = new ArrayList<View>();

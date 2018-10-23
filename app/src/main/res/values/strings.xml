@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Mr\'Right</string>
+    <string name="app_name1"># Mr\'Right</string>
     <string name="recommed">推荐</string>
     <string name="find">发现</string>
     <string name="message">消息</string>
@@ -54,7 +55,7 @@
     <string name="tiezi">帖子</string>
     <string name="genpai">跟拍</string>
     <string name="pinglun">评论</string>
-    
+
     <!--登录界面-->
     <string name="login">登录</string>
     <string name="forgetPwd">忘记密码？</string>
@@ -70,4 +71,13 @@
     <string name="getYanzhengma">获取验证码</string>
     <string name="miao">秒</string>
     <string name="tongyi">注册即表示同意《隐私权声明》</string>
+
+    <string name="text_test">TestTestTestTestTestTestTestTestTestTestTestTestTestTest
+    TestTest TestTestTestTestTestTestTestTestTestTestTest</string>
+    <string name="comment_more">查看更多 </string>
+    <string name="comment_more2"> 条评论</string>
+    <string name="post_detail">帖子详情</string>
+
+    <!--评论详情-->
+    <string name="comment_detail">评论详情</string>
 </resources>
