@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.wsh666.mrright.R;
 import com.example.wsh666.mrright.adapter.CommentListAdepter;
@@ -18,6 +19,10 @@ import com.example.wsh666.mrright.util.String_Util;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,9 +76,12 @@ public class CommentDetailActivity extends AppCompatActivity implements View.OnC
         comment_username.setText(comment.getUsername());
         comment_date.setText(comment.getComment_date());
         comment_up.setImageResource(R.drawable.up);
-        comment_up_num.setText(String.valueOf(comment.getComment_up_num()));
+        comment_up_num.setText(String.valueOf(comment.getComment_nice_num()));
         comment_down.setImageResource(R.drawable.down);
         comment_content.setText(comment.getComment_content());
+        if(comment.getIs_nice().equals("true")){
+            comment_up.setImageResource(R.drawable.uped);
+        }
     }
 
     public void  setAdapter(){
@@ -88,14 +96,17 @@ public class CommentDetailActivity extends AppCompatActivity implements View.OnC
                         Comment comment = new Comment();
                         comment = (Comment) msg.getData().getSerializable("msg");
                         commentList.add(comment);
+
+                        CommentListAdepter commentListAdepter = new CommentListAdepter(commentList,CommentDetailActivity.this);
+                        second_comment_listview.setAdapter(commentListAdepter);
                         break;
                     default:
                         break;
                 }
             }
         };
-        CommentListAdepter commentListAdepter = new CommentListAdepter(commentList,this);
-        second_comment_listview.setAdapter(commentListAdepter);
+        /*CommentListAdepter commentListAdepter = new CommentListAdepter(commentList,this);
+        second_comment_listview.setAdapter(commentListAdepter);*/
         new Thread(){
             @Override
             public void run() {
@@ -130,11 +141,103 @@ public class CommentDetailActivity extends AppCompatActivity implements View.OnC
 
                 break;
             case R.id.comment_up:
-
+                //已点赞（不可点赞）
+                if(comment_up.getDrawable().getCurrent().getConstantState().equals(CommentDetailActivity.this.getResources().getDrawable(R.drawable.uped).getConstantState())){
+                    Toast.makeText(CommentDetailActivity.this, "不可多次点赞", Toast.LENGTH_SHORT).show();
+                }else{//未点赞（可点赞）进入点赞的子线程
+                    AddNiceNumThread addThread = new AddNiceNumThread();
+                    addThread.start();
+                }
                 break;
             case R.id.comment_down:
-
+                //已点赞(取消赞)
+                if(comment_up.getDrawable().getCurrent().getConstantState().equals(CommentDetailActivity.this.getResources().getDrawable(R.drawable.uped).getConstantState())){
+                    CancelNiceNumThread cancelThread = new CancelNiceNumThread();
+                    cancelThread.start();
+                }else{//未点赞，不进行操作，进入取消点赞的子线程
+                    Toast.makeText(CommentDetailActivity.this, "没有可取消的赞", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
+    /*点赞的子线程*/
+    private class AddNiceNumThread extends Thread{
+        @Override
+        public void run() {
+            try {
+                String path = String_Util.urlString + "AddCommentNiceNum?comment_id=" + comment.getPost_id() + "&user_id=" + String_Util.userId;
+                URL url = new URL(path);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+                int responseCode = connection.getResponseCode();
+                if (responseCode == 200) {
+                    InputStream is = connection.getInputStream();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int len = -1;
+                    while ((len = is.read(buffer)) != -1) {
+                        baos.write(buffer, 0, len);
+                    }
+                    final String result = baos.toString();
+                    /*UI界面操作*/
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (result.equals("1")) {
+                                comment_up.setImageResource(R.drawable.uped);
+                                int num = Integer.parseInt(comment_up_num.getText().toString());
+                                comment_up_num.setText(String.valueOf(num+1));
+                                Toast.makeText(CommentDetailActivity.this, "点赞成功", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(CommentDetailActivity.this, "点赞失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    /*取消点赞的子线程*/
+    private class CancelNiceNumThread extends Thread{
+        @Override
+        public void run() {
+            try {
+                String path = String_Util.urlString + "CancleCommentNiceNum?comment_id=" + comment.getPost_id() + "&user_id=" + String_Util.userId;
+                URL url = new URL(path);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+                int responseCode = connection.getResponseCode();
+                if (responseCode == 200) {
+                    InputStream is = connection.getInputStream();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int len = -1;
+                    while ((len = is.read(buffer)) != -1) {
+                        baos.write(buffer, 0, len);
+                    }
+                    final String result = baos.toString();
+                    /*UI界面操作*/
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (result.equals("1")) {
+                                comment_up.setImageResource(R.drawable.up);
+                                int num = Integer.parseInt(comment_up_num.getText().toString());
+                                comment_up_num.setText(String.valueOf(num-1));
+                                Toast.makeText(CommentDetailActivity.this, "取消赞", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(CommentDetailActivity.this, "操作失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }

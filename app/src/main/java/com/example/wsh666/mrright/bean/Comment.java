@@ -26,7 +26,7 @@ public class Comment implements Serializable{
     private String username;
     private String comment_date;
     private String comment_content;
-    private int comment_up_num;
+    private int comment_nice_num;
     private int second_comment_num;
     private int comment_level;
     private String is_nice;
@@ -40,7 +40,7 @@ public class Comment implements Serializable{
         this.from_uid = user_id;
         this.username = username;
         this.comment_date = date;
-        this.comment_up_num = comment_up_num;
+        this.comment_nice_num = comment_up_num;
         this.comment_content = comment_content;
         this.second_comment_num = second_comment_num;
         this.comment_level = comment_level;
@@ -95,12 +95,12 @@ public class Comment implements Serializable{
         this.comment_content = comment_content;
     }
 
-    public int getComment_up_num() {
-        return comment_up_num;
+    public int getComment_nice_num() {
+        return comment_nice_num;
     }
 
-    public void setComment_up_num(int comment_up_num) {
-        this.comment_up_num = comment_up_num;
+    public void setComment_nice_num(int comment_up_num) {
+        this.comment_nice_num = comment_up_num;
     }
 
     public int getSecond_comment_num() {

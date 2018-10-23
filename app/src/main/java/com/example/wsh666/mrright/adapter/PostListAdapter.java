@@ -1,5 +1,6 @@
 package com.example.wsh666.mrright.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,11 +10,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.wsh666.mrright.R;
 import com.example.wsh666.mrright.activity.PostDetailActivity;
 import com.example.wsh666.mrright.bean.Post;
+import com.example.wsh666.mrright.util.String_Util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,6 +92,38 @@ public class PostListAdapter extends BaseAdapter {
         viewHolder.pinglun_num.setText(String.valueOf(postList.get(i).getPost_comment_num()));
         viewHolder.up_num.setText(String.valueOf(postList.get(i).getPost_nice_num()));
 
+        /*判断该用户对于此帖子是否已经实现过点赞*/
+        if(postList.get(i).getIs_nice().equals("true")){
+            viewHolder.list_btn_up.setImageResource(R.drawable.uped);
+        }
+        /*点赞事件处理*/
+        final ViewHolder finalViewHolder = viewHolder;
+        viewHolder.list_btn_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //已点赞（不可点赞）
+                if(finalViewHolder.list_btn_up.getDrawable().getCurrent().getConstantState().equals(context.getResources().getDrawable(R.drawable.uped).getConstantState())){
+                    Toast.makeText(context, "不可多次点赞", Toast.LENGTH_SHORT).show();
+                }else{//未点赞（可点赞）进入点赞的子线程
+                    AddNiceNumThread addThread = new AddNiceNumThread(i,finalViewHolder);
+                    addThread.start();
+                }
+            }
+        });
+        viewHolder.list_btn_down.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //已点赞(取消赞)
+                if(finalViewHolder.list_btn_up.getDrawable().getCurrent().getConstantState().equals(context.getResources().getDrawable(R.drawable.uped).getConstantState())){
+                    CancelNiceNumThread cancelThread = new CancelNiceNumThread(i,finalViewHolder);
+                    cancelThread.start();
+                }else{//未点赞，不进行操作，进入取消点赞的子线程
+                    Toast.makeText(context, "没有可取消的赞", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+        /*帖子内容点击事件*/
         viewHolder.post_content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,7 +139,106 @@ public class PostListAdapter extends BaseAdapter {
         return view;
     }
 
-   class ViewHolder {
+    /*点赞的子线程*/
+    private class AddNiceNumThread extends Thread{
+        private int i;
+        private ViewHolder viewHolder;
+        /*构造函数，传递列表的item和viewholder*/
+        AddNiceNumThread( int i,ViewHolder viewHolder) {
+            this.i = i;
+            this.viewHolder = viewHolder;
+        }
+        @Override
+        public void run() {
+            try {
+                String path = String_Util.urlString + "AddPostNiceNum?post_id=" + postList.get(i).getPost_id() + "&user_id=" + String_Util.userId;
+                URL url = new URL(path);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+                int responseCode = connection.getResponseCode();
+                if (responseCode == 200) {
+                    InputStream is = connection.getInputStream();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int len = -1;
+                    while ((len = is.read(buffer)) != -1) {
+                        baos.write(buffer, 0, len);
+                    }
+                    final String result = baos.toString();
+                    /*UI界面操作*/
+                    ((Activity)context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (result.equals("1")) {
+                                viewHolder.list_btn_up.setImageResource(R.drawable.uped);
+                                int num = Integer.parseInt(viewHolder.up_num.getText().toString());
+                                viewHolder.up_num.setText(String.valueOf(num+1));
+                                Toast.makeText(context, "点赞成功", Toast.LENGTH_SHORT).show();
+                                //点赞状态改变，所以更改post的Is_nice，才能给活动PostDetailActivity传递过去正确的值
+                                postList.get(i).setIs_nice("true");
+                                postList.get(i).setPost_nice_num(num+1);
+                            } else {
+                                Toast.makeText(context, "点赞失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    /*取消点赞的子线程*/
+    private class CancelNiceNumThread extends Thread{
+        private int i;
+        private ViewHolder viewHolder;
+        /*构造函数，传递列表的item和viewholder*/
+        CancelNiceNumThread( int i,ViewHolder viewHolder) {
+            this.i = i;
+            this.viewHolder = viewHolder;
+        }
+        @Override
+        public void run() {
+            try {
+                String path = String_Util.urlString + "CanclePostNiceNum?post_id=" + postList.get(i).getPost_id() + "&user_id=" + String_Util.userId;
+                URL url = new URL(path);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+                int responseCode = connection.getResponseCode();
+                if (responseCode == 200) {
+                    InputStream is = connection.getInputStream();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int len = -1;
+                    while ((len = is.read(buffer)) != -1) {
+                        baos.write(buffer, 0, len);
+                    }
+                    final String result = baos.toString();
+                    /*UI界面操作*/
+                    ((Activity)context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (result.equals("1")) {
+                                viewHolder.list_btn_up.setImageResource(R.drawable.up);
+                                int num = Integer.parseInt(viewHolder.up_num.getText().toString());
+                                viewHolder.up_num.setText(String.valueOf(num-1));
+                                Toast.makeText(context, "取消赞", Toast.LENGTH_SHORT).show();
+                                //点赞状态改变，所以更改post的Is_nice，才能给活动PostDetailActivity传递过去正确的值
+                                postList.get(i).setIs_nice("false");
+                                postList.get(i).setPost_nice_num(num-1);
+                            } else {
+                                Toast.makeText(context, "操作失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+   private class ViewHolder {
         View rootView;
         CircleImageView list_head_image;
         TextView list_username;
@@ -116,7 +254,7 @@ public class PostListAdapter extends BaseAdapter {
         TextView up_num;
         ImageView list_btn_down;
 
-        public ViewHolder(View rootView) {
+       ViewHolder(View rootView) {
             this.rootView = rootView;
             this.list_head_image = (CircleImageView) rootView.findViewById(R.id.list_head_image);
             this.list_username = (TextView) rootView.findViewById(R.id.list_username);

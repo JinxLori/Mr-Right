@@ -30,6 +30,7 @@ public class Post implements Serializable {
     private int zhuanfa_num;
     private int post_nice_num;
     private int post_comment_num;
+    private String is_nice;
 
     public Post() {
     }
@@ -128,6 +129,22 @@ public class Post implements Serializable {
         this.post_comment_num = post_comment_num;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getIs_nice() {
+        return is_nice;
+    }
+
+    public void setIs_nice(String is_nice) {
+        this.is_nice = is_nice;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -144,21 +161,4 @@ public class Post implements Serializable {
                 '}';
     }
 
-    /*@Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(post_id);
-        parcel.writeInt(post_from_id);
-        parcel.writeInt(post_topic_id);
-        parcel.writeString(username);
-        parcel.writeString(topic_content);
-        parcel.writeString(post_date);
-        parcel.writeInt(pinglun_num);
-        parcel.writeInt(post_nice_num);
-        parcel.writeInt(post_comment_num);
-    }*/
 }

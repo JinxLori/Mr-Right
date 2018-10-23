@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.wsh666.mrright.R;
 import com.example.wsh666.mrright.adapter.CommentListAdepter;
@@ -19,6 +20,10 @@ import com.example.wsh666.mrright.util.String_Util;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +70,13 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
         initView();
+        //setAdapter();
+    }
+
+    /*重写方法实现返回值后数据实时刷新*/
+    @Override
+    protected void onResume() {
+        super.onResume();
         setAdapter();
     }
 
@@ -94,6 +106,9 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
         post_topic.setText(post.getPost_topic());
         pinglun_num.setText(String.valueOf(post.getPost_comment_num()));
         up_num.setText(String.valueOf(post.getPost_nice_num()));
+        if(post.getIs_nice().equals("true")){
+            post_detail_btn_up.setImageResource(R.drawable.uped);
+        }
 
 
         fanhui.setOnClickListener(this);
@@ -120,14 +135,17 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
                         Comment comment = new Comment();
                         comment = (Comment) msg.getData().getSerializable("msg");
                         commentList.add(comment);
+                        /*放在Hander里面，数据加载完成之后才会加载视图，不然会出现数据加载慢了之后视图得不到数据从而不显示*/
+                        CommentListAdepter commentListAdepter = new CommentListAdepter(commentList, PostDetailActivity.this);
+                        comment_list.setAdapter(commentListAdepter);
                         break;
                     default:
                         break;
                 }
             }
         };
-        CommentListAdepter commentListAdepter = new CommentListAdepter(commentList, PostDetailActivity.this);
-        comment_list.setAdapter(commentListAdepter);
+        /*CommentListAdepter commentListAdepter = new CommentListAdepter(commentList, PostDetailActivity.this);
+        comment_list.setAdapter(commentListAdepter);*/
         new Thread(){
             @Override
             public void run() {
@@ -177,11 +195,102 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
 
                 break;
             case R.id.post_detail_btn_up:
-
+                //已点赞（不可点赞）
+                if(post_detail_btn_up.getDrawable().getCurrent().getConstantState().equals(PostDetailActivity.this.getResources().getDrawable(R.drawable.uped).getConstantState())){
+                    Toast.makeText(PostDetailActivity.this, "不可多次点赞", Toast.LENGTH_SHORT).show();
+                }else{//未点赞（可点赞）进入点赞的子线程
+                    AddNiceNumThread addThread = new AddNiceNumThread();
+                    addThread.start();
+                }
                 break;
             case R.id.post_detail_btn_down:
-
+                //已点赞(取消赞)
+                if(post_detail_btn_up.getDrawable().getCurrent().getConstantState().equals(PostDetailActivity.this.getResources().getDrawable(R.drawable.uped).getConstantState())){
+                    CancelNiceNumThread cancelThread = new CancelNiceNumThread();
+                    cancelThread.start();
+                }else{//未点赞，不进行操作，进入取消点赞的子线程
+                    Toast.makeText(PostDetailActivity.this, "没有可取消的赞", Toast.LENGTH_SHORT).show();
+                }
                 break;
+        }
+    }
+
+    /*点赞的子线程*/
+    private class AddNiceNumThread extends Thread{
+        @Override
+        public void run() {
+            try {
+                String path = String_Util.urlString + "AddPostNiceNum?post_id=" + post.getPost_id() + "&user_id=" + String_Util.userId;
+                URL url = new URL(path);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+                int responseCode = connection.getResponseCode();
+                if (responseCode == 200) {
+                    InputStream is = connection.getInputStream();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int len = -1;
+                    while ((len = is.read(buffer)) != -1) {
+                        baos.write(buffer, 0, len);
+                    }
+                    final String result = baos.toString();
+                    /*UI界面操作*/
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (result.equals("1")) {
+                                post_detail_btn_up.setImageResource(R.drawable.uped);
+                                int num = Integer.parseInt(up_num.getText().toString());
+                                up_num.setText(String.valueOf(num+1));
+                                Toast.makeText(PostDetailActivity.this, "点赞成功", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(PostDetailActivity.this, "点赞失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    /*取消点赞的子线程*/
+    private class CancelNiceNumThread extends Thread{
+        @Override
+        public void run() {
+            try {
+                String path = String_Util.urlString + "CanclePostNiceNum?post_id=" + post.getPost_id() + "&user_id=" + String_Util.userId;
+                URL url = new URL(path);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+                int responseCode = connection.getResponseCode();
+                if (responseCode == 200) {
+                    InputStream is = connection.getInputStream();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int len = -1;
+                    while ((len = is.read(buffer)) != -1) {
+                        baos.write(buffer, 0, len);
+                    }
+                    final String result = baos.toString();
+                    /*UI界面操作*/
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (result.equals("1")) {
+                                post_detail_btn_up.setImageResource(R.drawable.up);
+                                int num = Integer.parseInt(up_num.getText().toString());
+                                up_num.setText(String.valueOf(num-1));
+                                Toast.makeText(PostDetailActivity.this, "取消赞", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(PostDetailActivity.this, "操作失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

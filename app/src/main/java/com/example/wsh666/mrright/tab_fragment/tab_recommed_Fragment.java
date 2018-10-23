@@ -110,7 +110,7 @@ public class Tab_Recommed_Fragment extends Fragment implements View.OnClickListe
 
         /*第一个页面的控件处理*/
         final List<Post> postList = new ArrayList<>();
-        ListView listView = (ListView) view_one.findViewById(R.id.post_list);
+        final ListView listView = (ListView) view_one.findViewById(R.id.post_list);
         mHandler=new Handler(){
             @Override
             public void handleMessage(Message msg)
@@ -121,14 +121,17 @@ public class Tab_Recommed_Fragment extends Fragment implements View.OnClickListe
                         Post post = new Post();
                         post = (Post) msg.getData().getSerializable("msg");
                         postList.add(post);
+
+                        PostListAdapter postListAdapter = new PostListAdapter(postList,getActivity());
+                        listView.setAdapter(postListAdapter);
                         break;
                     default:
                         break;
                 }
             }
         };
-        PostListAdapter postListAdapter = new PostListAdapter(postList,getActivity());
-        listView.setAdapter(postListAdapter);
+        /*PostListAdapter postListAdapter = new PostListAdapter(postList,getActivity());
+        listView.setAdapter(postListAdapter);*/
         new Thread(){
             @Override
             public void run() {
