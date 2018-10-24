@@ -101,14 +101,19 @@ public class CommentListAdepter extends BaseAdapter {
                 context.startActivity(intent);
             }
         });
-        /*没有子级评论shi隐藏查看更多评论字眼*/
-        if(commentList.get(i).getSecond_comment_num()==0){
-            viewHolder.more_comment.setVisibility(View.GONE);
-        }
+
         /*判断该用户对于此评论是否已经实现过点赞*/
         if(commentList.get(i).getIs_nice().equals("true")){
             viewHolder.comment_up.setImageResource(R.drawable.uped);
         }
+
+        //没有子级评论shi隐藏查看更多评论字眼
+        if(commentList.get(i).getSecond_comment_num()==0){
+            viewHolder.more_comment.setVisibility(View.GONE);
+        }else{
+            viewHolder.more_comment.setVisibility(View.VISIBLE);
+        }
+
         /*点赞事件处理*/
         final ViewHolder finalViewHolder = viewHolder;
         viewHolder.comment_up.setOnClickListener(new View.OnClickListener() {

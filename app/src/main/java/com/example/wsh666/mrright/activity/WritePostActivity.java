@@ -20,8 +20,14 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.wsh666.mrright.R;
+import com.example.wsh666.mrright.util.String_Util;
 import com.scrat.app.selectorlibrary.ImageSelector;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -90,6 +96,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         chose_topic.setOnClickListener(this);
         select_image.setOnClickListener(this);
         clear_image.setOnClickListener(this);
+        post.setOnClickListener(this);
     }
 
     @Override
@@ -97,8 +104,6 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_SELECT_IMG) {
             showContent(data);
-            return;
-
         }
     }
 
@@ -140,6 +145,11 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
             case R.id.clear_image://重选
                 clearImages();
                 ImageSelector.show(this, REQUEST_CODE_SELECT_IMG, MAX_SELECT_COUNT);
+                break;
+            case R.id.post:
+                AddPostThread addPostThread = new AddPostThread();
+                addPostThread.start();
+                break;
         }
     }
 
@@ -150,12 +160,52 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    /*发帖（添加帖子的子线程）*/
+    private class AddPostThread extends Thread{
+        @Override
+        public void run() {
+            try {
+                int userId = String_Util.userId;
+                int topicId = 1;//获取话题的id
+//               /*这里要将中文当做数据传入URL，需要先对其进行编码，不然传递过去的是乱码*/
+                String post_content = URLEncoder.encode(edit_post.getText().toString(),"utf-8");
+
+                String path = String_Util.urlString + "AddPost?post_from_id="+userId+"&post_topic_id="+topicId+"&post_content_text="+post_content;
+                URL url = new URL(path);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+                int responseCode = connection.getResponseCode();
+                if (responseCode == 200) {
+                    InputStream is = connection.getInputStream();
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    int len = -1;
+                    while ((len = is.read(buffer)) != -1) {
+                        baos.write(buffer, 0, len);
+                    }
+                    final String result = baos.toString();
+                    /*UI界面操作*/
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (result.equals("1")) {
+                                Toast.makeText(WritePostActivity.this, "发布成功", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(WritePostActivity.this, "发布失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     private void submit() {
         String post = edit_post.getText().toString().trim();
         if (TextUtils.isEmpty(post)) {
             Toast.makeText(this, "post不能为空", Toast.LENGTH_SHORT).show();
-            return;
         }
     }
 }

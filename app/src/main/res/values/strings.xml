@@ -80,4 +80,7 @@
 
     <!--评论详情-->
     <string name="comment_detail">评论详情</string>
+
+    <!--帖子详情-->
+    <string name="comment">留下一句话吧~</string>
 </resources>

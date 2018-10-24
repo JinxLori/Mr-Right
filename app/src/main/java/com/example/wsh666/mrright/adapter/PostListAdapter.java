@@ -110,6 +110,7 @@ public class PostListAdapter extends BaseAdapter {
                 }
             }
         });
+        /*取消赞事件处理*/
         viewHolder.list_btn_down.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,6 +129,18 @@ public class PostListAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
 //                Toast.makeText(context,postList.get(i).toString(), Toast.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("post",postList.get(i));
+                Intent intent = new Intent();
+                intent.putExtras(bundle);
+                intent.setClass(context, PostDetailActivity.class);
+                context.startActivity(intent);
+            }
+        });
+        /*评论按钮点击事件*/
+        viewHolder.list_btn_pinglun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("post",postList.get(i));
                 Intent intent = new Intent();
