@@ -107,9 +107,9 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
         Bundle bundle = this.getIntent().getExtras();
         post = (Post) bundle.getSerializable("post");
 
-        post_detail_username.setText(post.getUser_name());
+        post_detail_username.setText(post.getUsername());
         post_content.setText(post.getPost_content_text());
-        post_topic.setText(post.getPost_topic());
+        post_topic.setText(post.getTopic_content());
         pinglun_num.setText(String.valueOf(post.getPost_comment_num()));
         up_num.setText(String.valueOf(post.getPost_nice_num()));
         if (post.getIs_nice().equals("true")) {

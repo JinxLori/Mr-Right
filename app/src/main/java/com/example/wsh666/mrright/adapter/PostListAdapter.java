@@ -79,10 +79,10 @@ public class PostListAdapter extends BaseAdapter {
         }
         viewHolder = (ViewHolder) view.getTag();
         viewHolder.list_head_image.setImageResource(R.drawable.test);
-        viewHolder.list_username.setText(postList.get(i).getUser_name());
+        viewHolder.list_username.setText(postList.get(i).getUsername());
         viewHolder.list_close.setImageResource(R.drawable.chacha);
         viewHolder.post_content.setText(postList.get(i).getPost_content_text());
-        viewHolder.post_topic.setText(postList.get(i).getPost_topic());
+        viewHolder.post_topic.setText(postList.get(i).getTopic_content());
         viewHolder.post_image.setImageResource(R.drawable.test);
         viewHolder.list_btn_share.setImageResource(R.drawable.zhuanfa);
         viewHolder.list_btn_pinglun.setImageResource(R.drawable.pinglun);

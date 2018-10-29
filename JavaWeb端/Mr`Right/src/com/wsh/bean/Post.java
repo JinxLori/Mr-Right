@@ -9,7 +9,7 @@ public class Post {
 	private String username;
 	private int post_topic_id;
 	private String topic_content;
-	private Blob post_content_image;
+	private String post_content_image;
 	private String post_content_text;
 	private String post_date;
 	private int post_nice_num;
@@ -45,10 +45,10 @@ public class Post {
 	public void setTopic_content(String topic_content) {
 		this.topic_content = topic_content;
 	}
-	public Blob getPost_content_image() {
+	public String getPost_content_image() {
 		return post_content_image;
 	}
-	public void setPost_content_image( Blob blob) {
+	public void setPost_content_image( String blob) {
 		this.post_content_image = blob;
 	}
 	public String getPost_content_text() {

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -32,7 +33,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CommentDetailActivity extends AppCompatActivity implements View.OnClickListener {
+public class CommentDetailActivity extends AppCompatActivity implements View.OnClickListener , AdapterView.OnItemClickListener{
 
     private ImageView fanhui;
     private CircleImageView comment_head_image;
@@ -48,6 +49,8 @@ public class CommentDetailActivity extends AppCompatActivity implements View.OnC
 
     Handler mHandler;
     Comment comment = new Comment();
+
+    int flag = 0;//设置一个标记判断输入框的文字是回复楼主还是回复下面的用户，如果是回复下面的用户则改为1，评论时上传的内容将包含（回复 username ：）
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,7 @@ public class CommentDetailActivity extends AppCompatActivity implements View.OnC
         comment_down.setOnClickListener(this);
         comment_edit.setOnClickListener(this);
         send_comment.setOnClickListener(this);
+        second_comment_listview.setOnItemClickListener(this);
 
         /*得到传递过来的comment*/
         Bundle bundle = this.getIntent().getExtras();
@@ -149,10 +153,10 @@ public class CommentDetailActivity extends AppCompatActivity implements View.OnC
 
                 break;
             case R.id.comment_head_image:
-
+                Toast.makeText(this, "进入该用户详情", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.comment_username:
-
+                Toast.makeText(this, "进入该用户详情", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.comment_up:
                 //已点赞（不可点赞）
@@ -180,6 +184,18 @@ public class CommentDetailActivity extends AppCompatActivity implements View.OnC
                 addCommentThread.start();
                 break;
         }
+    }
+
+    /*列表子项点击事件*/
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        //通过view获取其内部的组件，进而进行操作
+        String text = (String) ((TextView)view.findViewById(R.id.comment_username)).getText();
+        //大多数情况下，position和id相同，并且都从0开始
+        /*String showText = "点击第" + position + "项，文本内容为：" + text + "，ID为：" + id;
+        Toast.makeText(this, showText, Toast.LENGTH_LONG).show();*/
+        comment_edit.setHint("回复 "+text+" :");//变换hint的文字
+        flag = 1;
     }
 
     private void submit() {
@@ -275,7 +291,14 @@ public class CommentDetailActivity extends AppCompatActivity implements View.OnC
         public void run() {
             try {
                 int postId = comment.getPost_id();
-                String comment_content = URLEncoder.encode(comment_edit.getText().toString(),"utf-8");
+                /*根据flag判断输入框的评论是回复评论还是直接评论
+                * 如果是回复评论，前面添加上hint文字，也就是“回复 xxx :”*/
+                String comment_content = null;
+                if(flag == 0){
+                    comment_content = URLEncoder.encode(comment_edit.getText().toString(),"utf-8");
+                }else{
+                    comment_content = URLEncoder.encode(comment_edit.getHint().toString()+comment_edit.getText().toString(),"utf-8");
+                }
                 int comment_level = comment.getComment_id();
                 int userId = String_Util.userId;
                 String path = String_Util.urlString + "AddComment?post_id=" + postId + "&comment_content=" +comment_content+"&comment_level="+comment_level+"&from_uid="+ userId;

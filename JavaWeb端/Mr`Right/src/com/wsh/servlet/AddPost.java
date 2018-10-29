@@ -42,6 +42,7 @@ public class AddPost extends HttpServlet {
 		String post_from_id = request.getParameter("post_from_id");
 		String post_topic_id = request.getParameter("post_topic_id");
 		String post_content_text = request.getParameter("post_content_text");
+		String post_content_image = request.getParameter("post_content_image");
 		/*String post_date = request.getParameter("post_date");
 		String post_nice_num = request.getParameter("post_nice_num");*/
 		
@@ -49,6 +50,7 @@ public class AddPost extends HttpServlet {
 		post.setPost_from_id(Integer.parseInt(post_from_id));
 		post.setPost_topic_id(Integer.parseInt(post_topic_id));
 		post.setPost_content_text(post_content_text);
+		post.setPost_content_image(post_content_image);
 		
 		PostService postService = new PostService();
 		int num = postService.addPost(post);

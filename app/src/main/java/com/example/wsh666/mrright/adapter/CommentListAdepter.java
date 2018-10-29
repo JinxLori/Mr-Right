@@ -3,8 +3,15 @@ package com.example.wsh666.mrright.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,8 +95,23 @@ public class CommentListAdepter extends BaseAdapter {
         viewHolder.comment_up.setImageResource(R.drawable.up);
         viewHolder.comment_down.setImageResource(R.drawable.down);
         viewHolder.comment_up_num.setText(String.valueOf(commentList.get(i).getComment_nice_num()));
-        viewHolder.comment_content.setText(String.valueOf(commentList.get(i).getComment_content()));
         viewHolder.comment_more_num.setText(String.valueOf(commentList.get(i).getSecond_comment_num()));
+        /*带”回复 xxx :“的评论特殊处理，xxx变色，以及可点击事件*/
+        String content = commentList.get(i).getComment_content();
+        if(content.substring(0,2).equals("回复")&& content.contains(":")){
+            Log.e("ComListAdapter 带回复的评论",String.valueOf(content.indexOf("回复 ")+3));
+            int start = content.indexOf("回复 ")+3;/*用户名起始位置*/
+            int end = start + commentList.get(i).getUsername().length();/*用户名结束位置*/
+            SpannableStringBuilder style=new SpannableStringBuilder(content);
+            style.setSpan(new TextClick(),start,end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            viewHolder.comment_content.setText(style);
+            //这个setMovementMethod一定要记得设置，不然文字点击不生效
+            viewHolder.comment_content.setMovementMethod(LinkMovementMethod.getInstance());
+        }else{/*如果是直接评论，不对评论内容进行操作*/
+            viewHolder.comment_content.setText(String.valueOf(commentList.get(i).getComment_content()));
+        }
+
+
         viewHolder.more_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -243,6 +265,17 @@ public class CommentListAdepter extends BaseAdapter {
         }
     }
 
+    /*含”回复 xxx :“评论的xxx颜色改变以及点击事件*/
+    private class TextClick extends ClickableSpan {
+        @Override
+        public void onClick(View widget) {
+            Toast.makeText(context, "进入其他用户详情界面", Toast.LENGTH_SHORT).show();
+        }
+        @Override
+        public void updateDrawState(TextPaint ds) {
+            ds.setColor(Color.BLUE);
+        }
+    }
     private class ViewHolder {
         View rootView;
         CircleImageView comment_head_image;

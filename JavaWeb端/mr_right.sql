@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50713
 File Encoding         : 65001
 
-Date: 2018-10-24 17:57:12
+Date: 2018-10-29 18:58:54
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -29,7 +29,7 @@ CREATE TABLE `comment` (
   `comment_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `comment_nice_uid` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`comment_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COMMENT='评论表';
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COMMENT='评论表';
 
 -- ----------------------------
 -- Records of comment
@@ -41,6 +41,7 @@ INSERT INTO `comment` VALUES ('4', '2', '帖子二的评论一', '0', '2', '0', 
 INSERT INTO `comment` VALUES ('5', '1', '评论一的第二个评论', '1', '2', '1', '2018-10-22 13:49:38', '1,');
 INSERT INTO `comment` VALUES ('6', '1', '评论二的第一个评论', '2', '1', '0', '2018-10-22 14:05:49', '');
 INSERT INTO `comment` VALUES ('20', '1', '二级评论安卓端测试', '1', '1', '0', '2018-10-24 17:21:12', '');
+INSERT INTO `comment` VALUES ('21', '1', '回复 user2:二级评论下用户之间的回复的评论测试', '1', '1', '0', '2018-10-28 13:36:53', '');
 
 -- ----------------------------
 -- Table structure for parent_child
@@ -51,7 +52,7 @@ CREATE TABLE `parent_child` (
   `parent_id` int(11) NOT NULL,
   `child_id` int(11) NOT NULL,
   PRIMARY KEY (`p_c_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='评论的父子关系';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='评论的父子关系';
 
 -- ----------------------------
 -- Records of parent_child
@@ -60,6 +61,7 @@ INSERT INTO `parent_child` VALUES ('1', '1', '3');
 INSERT INTO `parent_child` VALUES ('2', '1', '5');
 INSERT INTO `parent_child` VALUES ('3', '2', '6');
 INSERT INTO `parent_child` VALUES ('5', '1', '20');
+INSERT INTO `parent_child` VALUES ('6', '1', '21');
 
 -- ----------------------------
 -- Table structure for photo
@@ -86,13 +88,13 @@ CREATE TABLE `post` (
   `post_from_id` int(11) NOT NULL,
   `post_topic_id` int(11) NOT NULL DEFAULT '1',
   `post_content_text` varchar(255) DEFAULT NULL,
-  `post_content_image` blob,
+  `post_content_image` varchar(255) DEFAULT NULL,
   `post_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `post_nice_num` int(11) NOT NULL DEFAULT '0',
   `post_comment_num` int(11) NOT NULL DEFAULT '0',
   `post_nice_uids` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`post_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of post
@@ -103,6 +105,11 @@ INSERT INTO `post` VALUES ('3', '1', '2', '帖子三（userId 1）', null, '2018
 INSERT INTO `post` VALUES ('4', '1', '2', '帖子四（userId 1）', null, '2018-10-09 10:28:39', '0', '0', '');
 INSERT INTO `post` VALUES ('5', '3', '2', '帖子五（userId 3）', null, '2018-10-10 11:48:31', '0', '0', '');
 INSERT INTO `post` VALUES ('12', '1', '1', '发帖安卓端测试一（无话题无照片）', null, '2018-10-24 17:53:32', '0', '0', '');
+INSERT INTO `post` VALUES ('13', '1', '1', '安卓端图片测试1', null, '2018-10-29 16:30:11', '0', '0', '');
+INSERT INTO `post` VALUES ('14', '1', '1', '安卓端图片测试2', null, '2018-10-29 16:34:16', '0', '0', '');
+INSERT INTO `post` VALUES ('15', '1', '1', '安卓端图片测试3', null, '2018-10-29 16:35:01', '0', '0', '');
+INSERT INTO `post` VALUES ('16', '1', '1', '安卓端图片测试3', null, '2018-10-29 16:38:25', '0', '0', '');
+INSERT INTO `post` VALUES ('33', '1', '1', '安卓端图片测试4', 'http://192.168.1.4:8080/Mr_Right/upload/1540807474594.jpg,http://192.168.1.4:8080/Mr_Right/upload/1540807474697.jpg,http://192.168.1.4:8080/Mr_Right/upload/1540807474802.jpg,', '2018-10-29 18:04:34', '0', '0', '');
 
 -- ----------------------------
 -- Table structure for tb_user

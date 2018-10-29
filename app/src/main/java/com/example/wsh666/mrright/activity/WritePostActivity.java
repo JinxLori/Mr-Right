@@ -1,11 +1,14 @@
 package com.example.wsh666.mrright.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -21,9 +24,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.wsh666.mrright.R;
 import com.example.wsh666.mrright.util.String_Util;
+import com.example.wsh666.mrright.util.UploadImagesUtil;
 import com.scrat.app.selectorlibrary.ImageSelector;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -60,8 +66,10 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     private Button clear_image;
     private TableLayout image_table;
 
+    private List<String> paths;//选取的图片的本机路径
     private List<ImageView> imageViews= new ArrayList<>();
-
+    private List<String> images = new ArrayList<>();//图片转换为String的集合
+    private String photoUrls = "";//得到的服务器图片的地址，
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,7 +117,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
 
     private void showContent(Intent data) {
         /*得到选择的图片的路径*/
-        List<String> paths = ImageSelector.getImagePaths(data);
+        paths = ImageSelector.getImagePaths(data);
         Log.e("图片路径",paths.toString());
         if (paths.isEmpty()) {
             return;
@@ -122,13 +130,35 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 imageViews.add((ImageView) childs[i].getChildAt(j));
             }
         }
-
         /*赋值*/
         for(int i=0;i<paths.size();i++){
             Glide.with(this).load(paths.get(i)).into(imageViews.get(i));
         }
     }
 
+    /*这里不用Hander，因为这里在上传图片并得到返回的服务器图片地址之后，还得进行上传帖子的线程，如果用Hander，会出现异步，也就是还Hander还没有运行，即还没得到地址，上传帖子的线程已经运行*/
+    /*通过线程UploadImagesThread得到服务器反馈的图片地址*//*
+    private List<String> photoUrls;
+    private String photoUrlsString = "" ;
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1: {
+                    photoUrls = (List<String>)msg.obj;
+                    for(int i=0;i<photoUrls.size();i++){
+                        *//*将图片地址集合转换为用，隔开的字符串*//*
+                        photoUrlsString = photoUrlsString +photoUrls.get(i)+",";
+                        Log.e("WritePostActivity",photoUrlsString);
+                    }
+                }
+                break;
+                default:
+                    break;
+            }
+        }
+    };*/
 
     @Override
     public void onClick(View v) {
@@ -147,6 +177,16 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 ImageSelector.show(this, REQUEST_CODE_SELECT_IMG, MAX_SELECT_COUNT);
                 break;
             case R.id.post:
+                /*上传图片并得到图片在服务器的地址的线程*/
+                List<String> imgstrs = imageViewToString();//将图片转换为String
+                UploadImagesThread uploadImagesThread = new UploadImagesThread(imgstrs);
+                uploadImagesThread.start();
+                try {
+                    uploadImagesThread.join();//保证图片上传并得到返回的地址之后再运行上传帖子的线程
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                /*上传帖子的线程*/
                 AddPostThread addPostThread = new AddPostThread();
                 addPostThread.start();
                 break;
@@ -169,8 +209,8 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 int topicId = 1;//获取话题的id
 //               /*这里要将中文当做数据传入URL，需要先对其进行编码，不然传递过去的是乱码*/
                 String post_content = URLEncoder.encode(edit_post.getText().toString(),"utf-8");
-
-                String path = String_Util.urlString + "AddPost?post_from_id="+userId+"&post_topic_id="+topicId+"&post_content_text="+post_content;
+                Log.e("AddPostThread",photoUrls+" ");
+                String path = String_Util.urlString + "AddPost?post_from_id="+userId+"&post_topic_id="+topicId+"&post_content_text="+post_content+"&post_content_image="+photoUrls;
                 URL url = new URL(path);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
@@ -202,6 +242,42 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    /*上传图片String并得到服务器中图片地址的线程*/
+    private class UploadImagesThread extends Thread{
+        private List<String> imgStrs;
+        public UploadImagesThread(List<String> imgStrs) {
+            this.imgStrs = imgStrs;
+        }
+        @Override
+        public void run() {
+            for(int i=0;i<images.size();i++){
+                /*调用工具类上传图片并得到返回的地址*/
+                String upLoadResults = new UploadImagesUtil().upLoadPhoto(imgStrs.get(i));
+                photoUrls = photoUrls+upLoadResults+",";//对地址进行拼接
+            }
+            Log.e("UploadImagesThread","结束");
+        }
+    }
+    /*根据去的图片的路径生成BitMap然后转换为Byte[]并利用Base64将Byte[]加密编码转换成String*/
+    public List<String> imageViewToString(){
+        for(int i=0;i<paths.size();i++){
+            try {
+                FileInputStream fis = new FileInputStream(paths.get(i));
+                Bitmap bitmap  = BitmapFactory.decodeStream(fis);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();//将Bitmap转成Byte[]
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);//压缩,100表示不压缩
+                String imageString = Base64.encodeToString(baos.toByteArray(),Base64.DEFAULT);//加密转换成String
+                Log.e("WritePostActivity",imageString);
+                images.add(imageString);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return images;
+        /*for(int i=0;i<images.size();i++){
+            Log.e("WritePostActivity2",i+"-"+images.get(i));
+        }*/
+    }
     private void submit() {
         String post = edit_post.getText().toString().trim();
         if (TextUtils.isEmpty(post)) {

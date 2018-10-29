@@ -32,7 +32,7 @@ public class PostDao {
 				post.setPost_topic_id(rs.getInt(4));
 				post.setTopic_content(rs.getString(5));
 				post.setPost_content_text(rs.getString(6));
-				post.setPost_content_image(rs.getBlob(7));
+				post.setPost_content_image(rs.getString(7));
 				post.setPost_date(rs.getTimestamp("post_date").toString());//getDate()只能得到日期，没有时分秒
 				post.setPost_nice_num(rs.getInt(9));
 				post.setPost_comment_num(rs.getInt(10));
@@ -65,11 +65,12 @@ public class PostDao {
 		int num = 0;
 		try {
 			conn = ConnDB.openConn();
-			String sql = "insert into post(post_from_id,post_topic_id,post_content_text) values(?,?,?)";
+			String sql = "insert into post(post_from_id,post_topic_id,post_content_text,post_content_image) values(?,?,?,?)";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, post.getPost_from_id());
 			ps.setInt(2, post.getPost_topic_id());
 			ps.setString(3,post.getPost_content_text());
+			ps.setString(4, post.getPost_content_image());
 //			ps.setString(4,post.getPost_date());
 //			ps.setInt(5,post.getPost_nice_num());
 			num = ps.executeUpdate();
