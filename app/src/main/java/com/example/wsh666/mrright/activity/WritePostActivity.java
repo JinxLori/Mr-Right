@@ -209,7 +209,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 int topicId = 1;//获取话题的id
 //               /*这里要将中文当做数据传入URL，需要先对其进行编码，不然传递过去的是乱码*/
                 String post_content = URLEncoder.encode(edit_post.getText().toString(),"utf-8");
-                Log.e("AddPostThread",photoUrls+" ");
+//                Log.e("AddPostThread",photoUrls+" ");
                 String path = String_Util.urlString + "AddPost?post_from_id="+userId+"&post_topic_id="+topicId+"&post_content_text="+post_content+"&post_content_image="+photoUrls;
                 URL url = new URL(path);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -267,7 +267,7 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();//将Bitmap转成Byte[]
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);//压缩,100表示不压缩
                 String imageString = Base64.encodeToString(baos.toByteArray(),Base64.DEFAULT);//加密转换成String
-                Log.e("WritePostActivity",imageString);
+//                Log.e("WritePostActivity",imageString);
                 images.add(imageString);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.wsh666.mrright.R;
 import com.example.wsh666.mrright.adapter.CommentListAdepter;
+import com.example.wsh666.mrright.adapter.PostGridViewAdapter;
 import com.example.wsh666.mrright.bean.Comment;
 import com.example.wsh666.mrright.bean.Post;
 import com.example.wsh666.mrright.util.Get_Data_FromWeb;
@@ -29,6 +31,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -55,7 +58,8 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
     private ImageView list_close;
     private TextView post_content;
     private TextView post_topic;
-    private ImageView post_image;
+//    private ImageView post_image;
+    private GridView images;
     private ImageView post_detail_btn_share;
     private TextView share_num;
     private ImageView post_detail_btn_pinglun;
@@ -93,7 +97,8 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
         list_close = (ImageView) findViewById(R.id.list_close);
         post_content = (TextView) findViewById(R.id.post_content);
         post_topic = (TextView) findViewById(R.id.post_topic);
-        post_image = (ImageView) findViewById(R.id.post_image);
+//        post_image = (ImageView) findViewById(R.id.post_image);
+        images = (GridView) findViewById(R.id.images);
         post_detail_btn_share = (ImageView) findViewById(R.id.post_detail_btn_share);
         share_num = (TextView) findViewById(R.id.share_num);
         post_detail_btn_pinglun = (ImageView) findViewById(R.id.post_detail_btn_pinglun);
@@ -115,6 +120,15 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
         if (post.getIs_nice().equals("true")) {
             post_detail_btn_up.setImageResource(R.drawable.uped);
         }
+        /*GridView图片处理*/
+        final List<String> imagesAddress = Arrays.asList(post.getPost_content_image().split(","));
+        PostGridViewAdapter postGridViewAdapter = new PostGridViewAdapter(this,imagesAddress);
+        images.setAdapter(postGridViewAdapter);
+        if(post.getPost_content_image().equals("")){
+            images.setVisibility(View.GONE);
+        }else {
+            images.setVisibility(View.VISIBLE);
+        }
 
 
         fanhui.setOnClickListener(this);
@@ -122,7 +136,7 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
         post_detail_username.setOnClickListener(this);
         list_close.setOnClickListener(this);
         post_topic.setOnClickListener(this);
-        post_image.setOnClickListener(this);
+        //post_image.setOnClickListener(this);
         post_detail_btn_share.setOnClickListener(this);
         post_detail_btn_pinglun.setOnClickListener(this);
         post_detail_btn_up.setOnClickListener(this);
@@ -193,9 +207,6 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
 
                 break;
             case R.id.post_topic:
-
-                break;
-            case R.id.post_image:
 
                 break;
             case R.id.post_detail_btn_share:

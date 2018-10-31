@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +25,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -83,7 +87,18 @@ public class PostListAdapter extends BaseAdapter {
         viewHolder.list_close.setImageResource(R.drawable.chacha);
         viewHolder.post_content.setText(postList.get(i).getPost_content_text());
         viewHolder.post_topic.setText(postList.get(i).getTopic_content());
-        viewHolder.post_image.setImageResource(R.drawable.test);
+
+        /*GridView数据填充处理*/
+        final List<String> imagesAddress = Arrays.asList(postList.get(i).getPost_content_image().split(","));
+        PostGridViewAdapter postGridViewAdapter = new PostGridViewAdapter(context,imagesAddress);
+        viewHolder.images.setAdapter(postGridViewAdapter);
+        if(postList.get(i).getPost_content_image().equals("")){
+            viewHolder.images.setVisibility(View.GONE);
+        }else {
+            Log.e("PostListAdapter",imagesAddress.get(0)+" ");
+            viewHolder.images.setVisibility(View.VISIBLE);
+        }
+
         viewHolder.list_btn_share.setImageResource(R.drawable.zhuanfa);
         viewHolder.list_btn_pinglun.setImageResource(R.drawable.pinglun);
         viewHolder.list_btn_up.setImageResource(R.drawable.up);
@@ -96,6 +111,13 @@ public class PostListAdapter extends BaseAdapter {
         if(postList.get(i).getIs_nice().equals("true")){
             viewHolder.list_btn_up.setImageResource(R.drawable.uped);
         }
+        /*GridView子项点击事件处理*/
+        viewHolder.images.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(context, imagesAddress.get(i), Toast.LENGTH_SHORT).show();
+            }
+        });
         /*点赞事件处理*/
         final ViewHolder finalViewHolder = viewHolder;
         viewHolder.list_btn_up.setOnClickListener(new View.OnClickListener() {
@@ -258,7 +280,8 @@ public class PostListAdapter extends BaseAdapter {
         ImageView list_close;
         TextView post_content;
         TextView post_topic;
-        ImageView post_image;
+        //ImageView post_image;
+        GridView images;
         ImageView list_btn_share;
         TextView share_num;
         ImageView list_btn_pinglun;
@@ -274,7 +297,8 @@ public class PostListAdapter extends BaseAdapter {
             this.list_close = (ImageView) rootView.findViewById(R.id.list_close);
             this.post_content = (TextView) rootView.findViewById(R.id.post_content);
             this.post_topic = (TextView) rootView.findViewById(R.id.post_topic);
-            this.post_image = (ImageView) rootView.findViewById(R.id.post_image);
+            //this.post_image = (ImageView) rootView.findViewById(R.id.post_image);
+            this.images = (GridView) rootView.findViewById(R.id.images);
             this.list_btn_share = (ImageView) rootView.findViewById(R.id.list_btn_share);
             this.share_num = (TextView) rootView.findViewById(R.id.share_num);
             this.list_btn_pinglun = (ImageView) rootView.findViewById(R.id.list_btn_pinglun);

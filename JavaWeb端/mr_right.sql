@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50713
 File Encoding         : 65001
 
-Date: 2018-10-29 18:58:54
+Date: 2018-10-31 15:57:59
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -94,7 +94,7 @@ CREATE TABLE `post` (
   `post_comment_num` int(11) NOT NULL DEFAULT '0',
   `post_nice_uids` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`post_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of post
@@ -109,7 +109,8 @@ INSERT INTO `post` VALUES ('13', '1', '1', '安卓端图片测试1', null, '2018
 INSERT INTO `post` VALUES ('14', '1', '1', '安卓端图片测试2', null, '2018-10-29 16:34:16', '0', '0', '');
 INSERT INTO `post` VALUES ('15', '1', '1', '安卓端图片测试3', null, '2018-10-29 16:35:01', '0', '0', '');
 INSERT INTO `post` VALUES ('16', '1', '1', '安卓端图片测试3', null, '2018-10-29 16:38:25', '0', '0', '');
-INSERT INTO `post` VALUES ('33', '1', '1', '安卓端图片测试4', 'http://192.168.1.4:8080/Mr_Right/upload/1540807474594.jpg,http://192.168.1.4:8080/Mr_Right/upload/1540807474697.jpg,http://192.168.1.4:8080/Mr_Right/upload/1540807474802.jpg,', '2018-10-29 18:04:34', '0', '0', '');
+INSERT INTO `post` VALUES ('33', '1', '1', '安卓端图片测试4', '', '2018-10-29 18:04:34', '0', '0', '');
+INSERT INTO `post` VALUES ('34', '1', '1', '服务器图片测试1', 'http://192.168.1.4:8080/Mr_Right/upload/1540965591846.jpg,http://192.168.1.4:8080/Mr_Right/upload/1540965591980.jpg,http://192.168.1.4:8080/Mr_Right/upload/1540965592135.jpg,', '2018-10-31 13:59:52', '0', '0', '');
 
 -- ----------------------------
 -- Table structure for tb_user
