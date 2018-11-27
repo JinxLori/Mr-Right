@@ -6,6 +6,7 @@ public class Post {
 
 	private int post_id;
 	private int post_from_id; 
+	private String headimage;
 	private String username;
 	private int post_topic_id;
 	private String topic_content;
@@ -80,6 +81,12 @@ public class Post {
 	}
 	public void setIs_nice(String is_nice) {
 		this.is_nice = is_nice;
+	}
+	public String getHeadimage() {
+		return headimage;
+	}
+	public void setHeadimage(String headimage) {
+		this.headimage = headimage;
 	}
 	
 	

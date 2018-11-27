@@ -26,16 +26,17 @@ public class PostDao {
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				Post post = new Post();
-				post.setPost_id(rs.getInt(1));
-				post.setPost_from_id(rs.getInt(2));
-				post.setUsername(rs.getString(3));
-				post.setPost_topic_id(rs.getInt(4));
-				post.setTopic_content(rs.getString(5));
-				post.setPost_content_text(rs.getString(6));
-				post.setPost_content_image(rs.getString(7));
+				post.setPost_id(rs.getInt("post_id"));
+				post.setPost_from_id(rs.getInt("post_from_id"));
+				post.setUsername(rs.getString("username"));
+				post.setPost_topic_id(rs.getInt("post_topic_id"));
+				post.setTopic_content(rs.getString("topic_content"));
+				post.setPost_content_text(rs.getString("post_content_text"));
+				post.setPost_content_image(rs.getString("post_content_image"));
 				post.setPost_date(rs.getTimestamp("post_date").toString());//getDate()只能得到日期，没有时分秒
-				post.setPost_nice_num(rs.getInt(9));
-				post.setPost_comment_num(rs.getInt(10));
+				post.setPost_nice_num(rs.getInt("post_nice_num"));
+				post.setPost_comment_num(rs.getInt("post_comment_num"));
+				post.setHeadimage(rs.getString("headimage"));
 				
 //				判断是否已被该用户点赞
 				post.setIs_nice("false");
@@ -52,10 +53,11 @@ public class PostDao {
 				posts.add(post);
 				System.out.println("~");
 			}
-			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally {
+			ConnDB.closeConn(rs, ps, conn);
 		}
 		System.out.println(posts.size());
 		return posts;
@@ -133,13 +135,17 @@ public class PostDao {
 //	得到点赞的人Id（帖子）
 	public List<String> getPostNiceUids(int comment_id) {
 		String uids = null;
+		Connection conn1 = null;
+		PreparedStatement ps1 = null;
+		ResultSet rs1 = null;
 		List<String> uidList = new ArrayList<String>();
 		try {
-			conn = ConnDB.openConn();
+			
+			conn1 = ConnDB.openConn();
 			String sql = "SELECT post_nice_uids FROM `post` WHERE post_id = ?;";
-			PreparedStatement ps1 = conn.prepareStatement(sql);//因为在上面的方法getCommentByPostId中会调用该方法，所以这里的ps,rs不能用全局变量
+			ps1 = conn1.prepareStatement(sql);//因为在上面的方法getCommentByPostId中会调用该方法，所以这里的ps,rs不能用全局变量
 			ps1.setInt(1,comment_id);
-			ResultSet rs1 = ps1.executeQuery();
+			rs1 = ps1.executeQuery();
 			while(rs1.next()) {
 				uids = rs1.getString(1);
 			}
@@ -149,8 +155,150 @@ public class PostDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-			
+			ConnDB.closeConn(rs1, ps1, conn1);
 		}
 		return uidList;
+	}
+	
+//	根据post_id查询post
+	public List<Post> getPostByPostId(int post_id,int user_id) {
+		List<Post> posts = new ArrayList<Post>();
+		try {
+			conn = ConnDB.openConn();
+			String sql = "select * from post_view where post_id = ?";
+			ps = conn.prepareStatement(sql);
+			ps.setLong(1,post_id);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				Post post = new Post();
+				post.setPost_id(rs.getInt("post_id"));
+				post.setPost_from_id(rs.getInt("post_from_id"));
+				post.setUsername(rs.getString("username"));
+				post.setPost_topic_id(rs.getInt("post_topic_id"));
+				post.setTopic_content(rs.getString("topic_content"));
+				post.setPost_content_text(rs.getString("post_content_text"));
+				post.setPost_content_image(rs.getString("post_content_image"));
+				post.setPost_date(rs.getTimestamp("post_date").toString());//getDate()只能得到日期，没有时分秒
+				post.setPost_nice_num(rs.getInt("post_nice_num"));
+				post.setPost_comment_num(rs.getInt("post_comment_num"));
+				post.setHeadimage(rs.getString("headimage"));
+				
+//				判断是否已被该用户点赞
+				post.setIs_nice("false");
+				List<String> uids = getPostNiceUids(rs.getInt(1));
+				int flag = 0;
+				for(int i=0;i<uids.size();i++) {
+					if(uids.get(i).equals(String.valueOf(user_id))){
+						flag=1;
+					}
+				}
+				if(flag == 1) {
+					post.setIs_nice("true");
+				}
+				posts.add(post);
+				System.out.println("~");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			ConnDB.closeConn(rs, ps, conn);
+		}
+		System.out.println(posts.size());
+		return posts;
+	}
+	
+//	随机获取7条数据
+	public List<Post> getPostRand(int user_id) {
+		List<Post> posts = new ArrayList<Post>();
+		try {
+			conn = ConnDB.openConn();
+			String sql = "select * from post_view order by rand() limit 7";
+			ps = conn.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				Post post = new Post();
+				post.setPost_id(rs.getInt("post_id"));
+				post.setPost_from_id(rs.getInt("post_from_id"));
+				post.setUsername(rs.getString("username"));
+				post.setPost_topic_id(rs.getInt("post_topic_id"));
+				post.setTopic_content(rs.getString("topic_content"));
+				post.setPost_content_text(rs.getString("post_content_text"));
+				post.setPost_content_image(rs.getString("post_content_image"));
+				post.setPost_date(rs.getTimestamp("post_date").toString());//getDate()只能得到日期，没有时分秒
+				post.setPost_nice_num(rs.getInt("post_nice_num"));
+				post.setPost_comment_num(rs.getInt("post_comment_num"));
+				post.setHeadimage(rs.getString("headimage"));
+				
+//				判断是否已被该用户点赞
+				post.setIs_nice("false");
+				List<String> uids = getPostNiceUids(rs.getInt(1));
+				int flag = 0;
+				for(int i=0;i<uids.size();i++) {
+					if(uids.get(i).equals(String.valueOf(user_id))){
+						flag=1;
+					}
+				}
+				if(flag == 1) {
+					post.setIs_nice("true");
+				}
+				posts.add(post);
+				System.out.println("~");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			ConnDB.closeConn(rs, ps, conn);
+		}
+		System.out.println(posts.size());
+		return posts;
+	}
+//	根据topic查询Topic
+	public List<Post> getPostByTopicID(int topic_id,int user_id) {
+		List<Post> posts = new ArrayList<Post>();
+		try {
+			conn = ConnDB.openConn();
+			String sql = "select * from post_view where post_topic_id = ?";
+			ps = conn.prepareStatement(sql);
+			ps.setLong(1,topic_id);
+			rs = ps.executeQuery();
+			while(rs.next()) {
+				Post post = new Post();
+				post.setPost_id(rs.getInt("post_id"));
+				post.setPost_from_id(rs.getInt("post_from_id"));
+				post.setUsername(rs.getString("username"));
+				post.setPost_topic_id(rs.getInt("post_topic_id"));
+				post.setTopic_content(rs.getString("topic_content"));
+				post.setPost_content_text(rs.getString("post_content_text"));
+				post.setPost_content_image(rs.getString("post_content_image"));
+				post.setPost_date(rs.getTimestamp("post_date").toString());//getDate()只能得到日期，没有时分秒
+				post.setPost_nice_num(rs.getInt("post_nice_num"));
+				post.setPost_comment_num(rs.getInt("post_comment_num"));
+				post.setHeadimage(rs.getString("headimage"));
+				
+//				判断是否已被该用户点赞
+				post.setIs_nice("false");
+				List<String> uids = getPostNiceUids(rs.getInt(1));
+				int flag = 0;
+				for(int i=0;i<uids.size();i++) {
+					if(uids.get(i).equals(String.valueOf(user_id))){
+						flag=1;
+					}
+				}
+				if(flag == 1) {
+					post.setIs_nice("true");
+				}
+				posts.add(post);
+				System.out.println("~");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			ConnDB.closeConn(rs, ps, conn);
+		}
+		System.out.println(posts.size());
+		return posts;
 	}
 }

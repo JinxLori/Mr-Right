@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +17,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +28,14 @@
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.PostDetailActivity" />
-        <activity android:name=".activity.CommentDetailActivity"></activity>
+        <activity android:name=".activity.CommentDetailActivity" />
+        android.support.multidex.MultiDexApplication
+        <activity android:name=".activity.EditInfomationActivity" />
+        <activity android:name=".activity.Chatctivity" />
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.OtherUserActivity" />
+        <activity android:name=".activity.TopicActivity" />
+        <activity android:name=".activity.TopicPostActivity"></activity>
     </application>
 
 </manifest>

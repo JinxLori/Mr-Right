@@ -83,4 +83,15 @@
 
     <!--帖子详情-->
     <string name="comment">留下一句话吧~</string>
+
+    <!--聊天界面-->
+
+    <!--话题界面-->
+    <string name="huatijinxuan">话 题 精 选</string>
+    <string name="huanyihuan">换一批</string>
+    <string name="huatiguangchang">话题广场</string>
+    <string name="chuangjianhuati">创建话题</string>
+
+    <!--开发中界面-->
+    <string name="kaifazhong">开发中，敬请期待~</string>
 </resources>

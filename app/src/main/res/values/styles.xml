@@ -12,6 +12,18 @@
         所以要用系统差异性的功能-->
     </style>
 
+    <style name="myTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textSize">16sp</item>
+        <!--<item name="android:statusBarColor">@color/transparent</item>
+        设置状态栏透明
+        这个只能API21之后能用
+        所以要用系统差异性的功能-->
+    </style>
+
     <!--状态栏透明的主题，活动调用，因为只有API21之后的可以用，所以这里不放任何东西，风格详细
     设置放在values-v21的文件夹中，这个文件夹只能被安卓5.0及以上系统才能访问-->
     <style name="StatusBarTrasparentTheme" parent="AppTheme">

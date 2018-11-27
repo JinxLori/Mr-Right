@@ -3,6 +3,7 @@ package com.wsh.service;
 import java.util.List;
 
 import com.wsh.bean.Comment;
+import com.wsh.bean.CommentAndPost;
 import com.wsh.dao.CommentDao;
 
 public class CommentService {
@@ -33,5 +34,10 @@ public class CommentService {
 //	得到点赞的人Id（评论）
 	public List<String> getCommentNiceUids(int comment_id){
 		return commentDao.getCommentNiceUids(comment_id);
+	}
+	
+//	根据用户id查询评论
+	public List<CommentAndPost> getCommentByUserId(int userId){
+		return commentDao.getCommentByUserId(userId);
 	}
 }

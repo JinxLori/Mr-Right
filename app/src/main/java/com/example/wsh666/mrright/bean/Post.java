@@ -24,6 +24,7 @@ public class Post implements Serializable {
     private int post_from_id;
     private int post_topic_id;
     private String username;
+    private String headimage;
     private String topic_content;
     private String post_content_image;
     private String post_content_text;
@@ -147,6 +148,14 @@ public class Post implements Serializable {
         this.is_nice = is_nice;
     }
 
+    public String getHeadimage() {
+        return headimage;
+    }
+
+    public void setHeadimage(String headimage) {
+        this.headimage = headimage;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -154,6 +163,7 @@ public class Post implements Serializable {
                 ", post_from_id=" + post_from_id +
                 ", post_topic_id=" + post_topic_id +
                 ", username='" + username + '\'' +
+                ", headimage='" + headimage + '\'' +
                 ", topic_content='" + topic_content + '\'' +
                 ", post_content_image='" + post_content_image + '\'' +
                 ", post_content_text='" + post_content_text + '\'' +

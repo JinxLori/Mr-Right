@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.wsh666.mrright.R;
 import com.example.wsh666.mrright.activity.CommentDetailActivity;
 import com.example.wsh666.mrright.bean.Comment;
@@ -89,7 +90,8 @@ public class CommentListAdepter extends BaseAdapter {
             view.setTag(viewHolder);
         }
         viewHolder = (ViewHolder) view.getTag();
-        viewHolder.comment_head_image.setImageResource(R.drawable.test);
+        Glide.with(context).load(commentList.get(i).getHeadimage()).into(viewHolder.comment_head_image);
+        /*viewHolder.comment_head_image.setImageResource(R.drawable.test);*/
         viewHolder.comment_username.setText(commentList.get(i).getUsername());
         viewHolder.comment_date.setText(commentList.get(i).getComment_date());
         viewHolder.comment_up.setImageResource(R.drawable.up);
@@ -98,7 +100,7 @@ public class CommentListAdepter extends BaseAdapter {
         viewHolder.comment_more_num.setText(String.valueOf(commentList.get(i).getSecond_comment_num()));
         /*带”回复 xxx :“的评论特殊处理，xxx变色，以及可点击事件*/
         String content = commentList.get(i).getComment_content();
-        if(content.substring(0,2).equals("回复")&& content.contains(":")){
+        if(content.length()>=2&&content.substring(0,2).equals("回复")&& content.contains(":")){
             Log.e("ComListAdapter 带回复的评论",String.valueOf(content.indexOf("回复 ")+3));
             int start = content.indexOf("回复 ")+3;/*用户名起始位置*/
             int end = start + commentList.get(i).getUsername().length();/*用户名结束位置*/
@@ -121,6 +123,11 @@ public class CommentListAdepter extends BaseAdapter {
                 intent.putExtras(bundle);
                 intent.setClass(context, CommentDetailActivity.class);
                 context.startActivity(intent);
+
+                /*记住用户点击的评论的下标*/
+                String_Util.comment_index = i;
+                /*要将添加的评论数归零*/
+                String_Util.added_comment_comment_num = 0;
             }
         });
 

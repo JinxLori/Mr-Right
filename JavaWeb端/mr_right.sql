@@ -10,10 +10,43 @@ Target Server Type    : MYSQL
 Target Server Version : 50713
 File Encoding         : 65001
 
-Date: 2018-10-31 15:57:59
+Date: 2018-11-26 13:21:08
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for chat
+-- ----------------------------
+DROP TABLE IF EXISTS `chat`;
+CREATE TABLE `chat` (
+  `chat_id` int(11) NOT NULL AUTO_INCREMENT,
+  `chat_send` varchar(255) NOT NULL,
+  `chat_recive` varchar(255) NOT NULL,
+  `chat_content` varchar(255) NOT NULL,
+  `is_read` int(11) NOT NULL DEFAULT '0',
+  `chat_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`chat_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of chat
+-- ----------------------------
+INSERT INTO `chat` VALUES ('1', '3', '1', '123456', '1', '2018-11-17 14:55:50');
+INSERT INTO `chat` VALUES ('2', '4', '1', '456789', '1', '2018-11-18 12:37:20');
+INSERT INTO `chat` VALUES ('3', '1', '4', 'qweqwe', '1', '2018-11-19 13:59:13');
+INSERT INTO `chat` VALUES ('4', '4', '1', '2222', '1', '2018-11-19 15:55:20');
+INSERT INTO `chat` VALUES ('5', '5', '7', '答辩测试', '0', '2018-11-24 09:17:34');
+INSERT INTO `chat` VALUES ('6', '5', '3', '答辩测试', '1', '2018-11-24 09:18:30');
+INSERT INTO `chat` VALUES ('7', '5', '3', '答辩测试', '1', '2018-11-24 09:24:21');
+INSERT INTO `chat` VALUES ('8', '3', '5', '回复测试', '1', '2018-11-24 09:25:35');
+INSERT INTO `chat` VALUES ('9', '3', '5', '，', '1', '2018-11-24 09:25:59');
+INSERT INTO `chat` VALUES ('10', '1', '3', '测试', '1', '2018-11-24 09:28:22');
+INSERT INTO `chat` VALUES ('11', '1', '3', '回复测试', '1', '2018-11-24 09:28:56');
+INSERT INTO `chat` VALUES ('33', '1', '3', '090', '1', '2018-11-24 14:03:14');
+INSERT INTO `chat` VALUES ('34', '3', '1', '哦', '1', '2018-11-24 14:03:20');
+INSERT INTO `chat` VALUES ('35', '1', '3', '，，，，', '1', '2018-11-24 14:06:21');
+INSERT INTO `chat` VALUES ('36', '1', '3', '111', '1', '2018-11-24 14:27:39');
 
 -- ----------------------------
 -- Table structure for comment
@@ -29,19 +62,25 @@ CREATE TABLE `comment` (
   `comment_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `comment_nice_uid` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`comment_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COMMENT='评论表';
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 COMMENT='评论表';
 
 -- ----------------------------
 -- Records of comment
 -- ----------------------------
-INSERT INTO `comment` VALUES ('1', '1', '帖子一的评论一', '0', '1', '4', '2018-10-09 15:40:59', '2,3,1,');
-INSERT INTO `comment` VALUES ('2', '1', '帖子一的评论二', '0', '2', '5', '2018-10-09 15:40:59', '1,1,1,1,1,');
-INSERT INTO `comment` VALUES ('3', '1', '评论一的第一个评论', '1', '2', '1', '2018-10-09 15:40:59', '1,');
-INSERT INTO `comment` VALUES ('4', '2', '帖子二的评论一', '0', '2', '0', '2018-10-10 12:12:44', '');
-INSERT INTO `comment` VALUES ('5', '1', '评论一的第二个评论', '1', '2', '1', '2018-10-22 13:49:38', '1,');
-INSERT INTO `comment` VALUES ('6', '1', '评论二的第一个评论', '2', '1', '0', '2018-10-22 14:05:49', '');
-INSERT INTO `comment` VALUES ('20', '1', '二级评论安卓端测试', '1', '1', '0', '2018-10-24 17:21:12', '');
-INSERT INTO `comment` VALUES ('21', '1', '回复 user2:二级评论下用户之间的回复的评论测试', '1', '1', '0', '2018-10-28 13:36:53', '');
+INSERT INTO `comment` VALUES ('51', '64', '女神还是可以的啊 哈哈', '0', '1', '0', '2018-11-24 03:50:12', '');
+INSERT INTO `comment` VALUES ('52', '75', '比如你吧，啊哈哈哈', '0', '2', '0', '2018-11-24 03:57:45', '');
+INSERT INTO `comment` VALUES ('53', '63', '456？', '0', '3', '0', '2018-11-24 03:58:16', '');
+INSERT INTO `comment` VALUES ('54', '75', 'emmmmm，', '0', '4', '0', '2018-11-24 03:59:16', '');
+INSERT INTO `comment` VALUES ('55', '75', '没见过', '0', '4', '0', '2018-11-24 03:59:25', '');
+INSERT INTO `comment` VALUES ('56', '64', '那我也激动激动', '0', '5', '0', '2018-11-24 03:59:39', '');
+INSERT INTO `comment` VALUES ('57', '73', '加油', '0', '6', '0', '2018-11-24 03:59:48', '');
+INSERT INTO `comment` VALUES ('58', '76', 'N74', '0', '7', '0', '2018-11-24 04:00:00', '');
+INSERT INTO `comment` VALUES ('59', '77', '一定在做梦', '0', '3', '0', '2018-11-24 04:00:11', '');
+INSERT INTO `comment` VALUES ('60', '64', 'emmm', '51', '2', '0', '2018-11-24 04:19:45', '');
+INSERT INTO `comment` VALUES ('61', '68', '还行吧', '0', '4', '0', '2018-11-24 04:35:37', '');
+INSERT INTO `comment` VALUES ('62', '68', '确实还行', '61', '4', '0', '2018-11-24 04:35:54', '');
+INSERT INTO `comment` VALUES ('63', '70', '答辩测试', '0', '4', '0', '2018-11-24 08:53:14', '');
+INSERT INTO `comment` VALUES ('64', '70', '这是', '63', '3', '0', '2018-11-24 14:04:26', '');
 
 -- ----------------------------
 -- Table structure for parent_child
@@ -52,16 +91,14 @@ CREATE TABLE `parent_child` (
   `parent_id` int(11) NOT NULL,
   `child_id` int(11) NOT NULL,
   PRIMARY KEY (`p_c_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='评论的父子关系';
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COMMENT='评论的父子关系';
 
 -- ----------------------------
 -- Records of parent_child
 -- ----------------------------
-INSERT INTO `parent_child` VALUES ('1', '1', '3');
-INSERT INTO `parent_child` VALUES ('2', '1', '5');
-INSERT INTO `parent_child` VALUES ('3', '2', '6');
-INSERT INTO `parent_child` VALUES ('5', '1', '20');
-INSERT INTO `parent_child` VALUES ('6', '1', '21');
+INSERT INTO `parent_child` VALUES ('16', '51', '60');
+INSERT INTO `parent_child` VALUES ('17', '61', '62');
+INSERT INTO `parent_child` VALUES ('18', '63', '64');
 
 -- ----------------------------
 -- Table structure for photo
@@ -94,23 +131,56 @@ CREATE TABLE `post` (
   `post_comment_num` int(11) NOT NULL DEFAULT '0',
   `post_nice_uids` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`post_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of post
 -- ----------------------------
-INSERT INTO `post` VALUES ('1', '1', '1', '帖子一（userId 1）', null, '2018-10-06 12:51:09', '2', '5', '1,1,');
-INSERT INTO `post` VALUES ('2', '2', '2', '帖子二（userId 2）', null, '2018-10-09 10:25:16', '0', '0', '');
-INSERT INTO `post` VALUES ('3', '1', '2', '帖子三（userId 1）', null, '2018-10-09 10:27:50', '1', '0', '1,');
-INSERT INTO `post` VALUES ('4', '1', '2', '帖子四（userId 1）', null, '2018-10-09 10:28:39', '0', '0', '');
-INSERT INTO `post` VALUES ('5', '3', '2', '帖子五（userId 3）', null, '2018-10-10 11:48:31', '0', '0', '');
-INSERT INTO `post` VALUES ('12', '1', '1', '发帖安卓端测试一（无话题无照片）', null, '2018-10-24 17:53:32', '0', '0', '');
-INSERT INTO `post` VALUES ('13', '1', '1', '安卓端图片测试1', null, '2018-10-29 16:30:11', '0', '0', '');
-INSERT INTO `post` VALUES ('14', '1', '1', '安卓端图片测试2', null, '2018-10-29 16:34:16', '0', '0', '');
-INSERT INTO `post` VALUES ('15', '1', '1', '安卓端图片测试3', null, '2018-10-29 16:35:01', '0', '0', '');
-INSERT INTO `post` VALUES ('16', '1', '1', '安卓端图片测试3', null, '2018-10-29 16:38:25', '0', '0', '');
-INSERT INTO `post` VALUES ('33', '1', '1', '安卓端图片测试4', '', '2018-10-29 18:04:34', '0', '0', '');
-INSERT INTO `post` VALUES ('34', '1', '1', '服务器图片测试1', 'http://192.168.1.4:8080/Mr_Right/upload/1540965591846.jpg,http://192.168.1.4:8080/Mr_Right/upload/1540965591980.jpg,http://192.168.1.4:8080/Mr_Right/upload/1540965592135.jpg,', '2018-10-31 13:59:52', '0', '0', '');
+INSERT INTO `post` VALUES ('63', '4', '4', '123', 'http://192.168.191.1:8080/Mr_Right/upload/1542992978017.jpg,', '2018-11-24 01:09:38', '0', '0', '');
+INSERT INTO `post` VALUES ('64', '1', '11', '又一次见到女神，还是比较激动的哈~', 'http://192.168.191.1:8080/Mr_Right/upload/1543000921188.jpg,', '2018-11-24 03:22:01', '0', '0', '');
+INSERT INTO `post` VALUES ('67', '3', '8', 'emmmm，', 'http://192.168.191.1:8080/Mr_Right/upload/1543001325895.jpg,', '2018-11-24 03:28:45', '0', '0', '');
+INSERT INTO `post` VALUES ('68', '7', '9', '这算不算物理外挂？75寸', 'http://192.168.191.1:8080/Mr_Right/upload/1543001787403.jpg,', '2018-11-24 03:36:27', '0', '0', '');
+INSERT INTO `post` VALUES ('69', '5', '2', '这些你看过几部？', 'http://192.168.191.1:8080/Mr_Right/upload/1543002058012.jpg,http://192.168.191.1:8080/Mr_Right/upload/1543002058384.jpg,http://192.168.191.1:8080/Mr_Right/upload/1543002058537.jpg,', '2018-11-24 03:40:58', '0', '0', '');
+INSERT INTO `post` VALUES ('70', '2', '4', '你见过最人性化的设计是什么？', 'http://192.168.191.1:8080/Mr_Right/upload/1543002223730.jpg,http://192.168.191.1:8080/Mr_Right/upload/1543002223832.jpg,http://192.168.191.1:8080/Mr_Right/upload/1543002224460.jpg,', '2018-11-24 03:43:44', '0', '0', '');
+INSERT INTO `post` VALUES ('73', '1', '1', '我要撑不下去了', 'http://192.168.191.1:8080/Mr_Right/upload/1543001787403.jpg,', '2018-11-24 03:51:19', '0', '0', '');
+INSERT INTO `post` VALUES ('74', '2', '6', '这就随随便便来点儿啥啊', 'http://192.168.191.1:8080/Mr_Right/upload/1543001325895.jpg,', '2018-11-24 03:52:26', '0', '0', '');
+INSERT INTO `post` VALUES ('75', '3', '5', '你们一般都遇见过哪些比较奇葩的人', 'http://192.168.191.1:8080/Mr_Right/upload/1542992978017.jpg,', '2018-11-24 03:53:19', '0', '0', '');
+INSERT INTO `post` VALUES ('76', '7', '3', '联想', 'http://192.168.191.1:8080/Mr_Right/upload/1543002058012.jpg,http://192.168.191.1:8080/Mr_Right/upload/1543002058384.jpg,http://192.168.191.1:8080/Mr_Right/upload/1543002058537.jpg,', '2018-11-24 03:53:59', '0', '0', '');
+INSERT INTO `post` VALUES ('77', '6', '4', '如果大学你在清华大学，你会说什么', 'http://192.168.191.1:8080/Mr_Right/upload/1543001787403.jpg,http://192.168.191.1:8080/Mr_Right/upload/1542992978017.jpg,', '2018-11-24 03:54:52', '0', '0', '');
+INSERT INTO `post` VALUES ('78', '3', '8', '答辩测试', 'http://192.168.191.1:8080/Mr_Right/upload/1543021350918.jpg,', '2018-11-24 09:02:30', '0', '0', '');
+INSERT INTO `post` VALUES ('79', '1', '8', '1111', 'http://192.168.191.1:8080/Mr_Right/upload/1543041790082.jpg,http://192.168.191.1:8080/Mr_Right/upload/1543041790912.jpg,http://192.168.191.1:8080/Mr_Right/upload/1543041794148.jpg,', '2018-11-24 14:43:14', '0', '0', '');
+
+-- ----------------------------
+-- Table structure for remind
+-- ----------------------------
+DROP TABLE IF EXISTS `remind`;
+CREATE TABLE `remind` (
+  `remind_id` int(11) NOT NULL AUTO_INCREMENT,
+  `remind_from_name` varchar(25) NOT NULL,
+  `remind_content` varchar(255) NOT NULL,
+  `remind_to` int(11) NOT NULL,
+  `remind_reason_type` int(255) NOT NULL,
+  `remind_reason` int(11) NOT NULL,
+  `remind_reason_content` varchar(255) NOT NULL,
+  `remind_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_read` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`remind_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of remind
+-- ----------------------------
+INSERT INTO `remind` VALUES ('5', '路人乙2号', '女神还是可以的啊 哈哈', '4', '1', '64', '又一次见到女神，还是比较激动的哈~', '2018-11-24 03:50:12', '0');
+INSERT INTO `remind` VALUES ('6', '路人乙2号', '比如你吧，啊哈哈哈', '3', '1', '75', '你们一般都遇见过哪些比较奇葩的人', '2018-11-24 03:57:45', '0');
+INSERT INTO `remind` VALUES ('7', '路人乙2号', '456？', '4', '1', '63', '123', '2018-11-24 03:58:16', '0');
+INSERT INTO `remind` VALUES ('8', '路人乙2号', 'emmmmm，', '3', '1', '75', '你们一般都遇见过哪些比较奇葩的人', '2018-11-24 03:59:16', '0');
+INSERT INTO `remind` VALUES ('9', '路人乙2号', '没见过', '3', '1', '75', '你们一般都遇见过哪些比较奇葩的人', '2018-11-24 03:59:25', '0');
+INSERT INTO `remind` VALUES ('10', '路人乙2号', '那我也激动激动', '1', '1', '64', '又一次见到女神，还是比较激动的哈~', '2018-11-24 03:59:39', '0');
+INSERT INTO `remind` VALUES ('11', '路人乙2号', '加油', '1', '1', '73', '我要撑不下去了', '2018-11-24 03:59:48', '0');
+INSERT INTO `remind` VALUES ('12', '路人乙2号', 'N74', '7', '1', '76', '联想', '2018-11-24 04:00:00', '0');
+INSERT INTO `remind` VALUES ('13', '路人乙2号', '一定在做梦', '6', '1', '77', '如果大学你在清华大学，你会说什么', '2018-11-24 04:00:11', '0');
+INSERT INTO `remind` VALUES ('14', '路人乙2号', '还行吧', '7', '1', '68', '这算不算物理外挂？75寸', '2018-11-24 04:35:37', '0');
+INSERT INTO `remind` VALUES ('15', '路人乙2号', '答辩测试', '2', '1', '70', '你见过最人性化的设计是什么？', '2018-11-24 08:53:14', '0');
 
 -- ----------------------------
 -- Table structure for tb_user
@@ -118,22 +188,28 @@ INSERT INTO `post` VALUES ('34', '1', '1', '服务器图片测试1', 'http://192
 DROP TABLE IF EXISTS `tb_user`;
 CREATE TABLE `tb_user` (
   `userid` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(10) NOT NULL,
-  `password` varchar(16) NOT NULL,
-  `headimage` blob,
-  `phonenumber` int(11) DEFAULT NULL,
-  `sex` varchar(255) NOT NULL DEFAULT '',
-  `birthday` date DEFAULT NULL,
+  `username` varchar(20) NOT NULL,
+  `password` varchar(32) NOT NULL,
+  `headimage` varchar(100) DEFAULT NULL,
+  `phonenumber` varchar(20) DEFAULT NULL,
+  `sex` varchar(20) NOT NULL DEFAULT '',
+  `birthday` varchar(20) DEFAULT NULL,
   `sign` varchar(36) DEFAULT NULL,
   PRIMARY KEY (`userid`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tb_user
 -- ----------------------------
-INSERT INTO `tb_user` VALUES ('1', 'user1', '123', null, '111111', 'm', '2012-02-06', 'user1的签名');
-INSERT INTO `tb_user` VALUES ('2', 'user2', '123', null, '222222', 'w', '2011-11-01', 'user2的签名');
-INSERT INTO `tb_user` VALUES ('3', 'user3', '123', null, null, '', null, null);
+INSERT INTO `tb_user` VALUES ('1', '省港大姿花儿', 'wsh', 'http://192.168.191.1:8080/Mr_Right/upload/1543001787403.jpg', '18774515898', 'm', '2018 - 11 - 22', '省港大姿花儿挨着那个谁');
+INSERT INTO `tb_user` VALUES ('2', '淑女姐姐啊', 'wsh', 'http://192.168.191.1:8080/Mr_Right/upload/1542992978017.jpg', '18774515899', 'm', '2011-1-2', '正经的淑女姐姐');
+INSERT INTO `tb_user` VALUES ('3', '说攻', 'wsh', 'http://192.168.191.1:8080/Mr_Right/upload/1543001325895.jpg', '18774515899', '', '2018 - 11 - 22', '普遍情商高');
+INSERT INTO `tb_user` VALUES ('4', '路人乙2号', 'wsh', 'http://192.168.191.1:8080/Mr_Right/upload/1543001325895.jpg', '18774515899', 'm', ' 2018 - 11 - 22', ' 沙雕网友贼有趣');
+INSERT INTO `tb_user` VALUES ('5', 'JinxLori', 'wsh', 'http://192.168.191.1:8080/Mr_Right/upload/1543002058384.jpg', '18774515899', 'm', '2018 - 11 - 22', 'Good good study');
+INSERT INTO `tb_user` VALUES ('6', '我没吃药', 'wsh', 'http://192.168.191.1:8080/Mr_Right/upload/1543002223832.jpg', '18774515898', 'm', '2018 - 11 - 22', '有没有谦友啊');
+INSERT INTO `tb_user` VALUES ('7', '尧小北', 'wsh', 'http://192.168.191.1:8080/Mr_Right/upload/1543000921188.jpg', '18774515898', 'm', '2018 - 11 - 22', '了解一下不');
+INSERT INTO `tb_user` VALUES ('8', '18774515898', 'wsh', 'http://192.168.191.1:8080/Mr_Right/upload/1543002223832.jpg', '18774515898', 'm', '', '');
+INSERT INTO `tb_user` VALUES ('9', '111', 'wsh', 'http://192.168.191.1:8080/Mr_Right/upload/1543002223832.jpg', null, '', null, null);
 
 -- ----------------------------
 -- Table structure for topic
@@ -142,32 +218,54 @@ DROP TABLE IF EXISTS `topic`;
 CREATE TABLE `topic` (
   `topic_id` int(11) NOT NULL AUTO_INCREMENT,
   `topic_content` varchar(16) NOT NULL,
+  `topic_image` varchar(255) NOT NULL,
   PRIMARY KEY (`topic_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of topic
 -- ----------------------------
-INSERT INTO `topic` VALUES ('1', '音乐');
-INSERT INTO `topic` VALUES ('2', '影视');
+INSERT INTO `topic` VALUES ('1', '音乐', 'http://192.168.191.1:8080/Mr_Right/upload/1543001787403.jpg');
+INSERT INTO `topic` VALUES ('2', '影视', 'http://192.168.191.1:8080/Mr_Right/upload/1542992978017.jpg');
+INSERT INTO `topic` VALUES ('3', '这特么都是套路', 'http://192.168.191.1:8080/Mr_Right/upload/1543001325895.jpg');
+INSERT INTO `topic` VALUES ('4', '知乎神回复', 'http://192.168.191.1:8080/Mr_Right/upload/1543001325895.jpg');
+INSERT INTO `topic` VALUES ('5', '说说电视剧', 'http://192.168.191.1:8080/Mr_Right/upload/1543002223832.jpg');
+INSERT INTO `topic` VALUES ('6', '那些年的老段子', 'http://192.168.191.1:8080/Mr_Right/upload/1543002058384.jpg');
+INSERT INTO `topic` VALUES ('7', '每日科普', 'http://192.168.191.1:8080/Mr_Right/upload/1543000921188.jpg');
+INSERT INTO `topic` VALUES ('8', '那个叫学校的地方', 'http://192.168.191.1:8080/Mr_Right/upload/1543001325895.jpg');
+INSERT INTO `topic` VALUES ('9', 'LOL', 'http://192.168.191.1:8080/Mr_Right/upload/1543000921188.jpg');
+INSERT INTO `topic` VALUES ('10', '苏州', 'http://192.168.191.1:8080/Mr_Right/upload/1542992978017.jpg');
+INSERT INTO `topic` VALUES ('11', '一本正经胡说八道', 'http://192.168.191.1:8080/Mr_Right/upload/1543000921188.jpg');
+
+-- ----------------------------
+-- View structure for chat_view
+-- ----------------------------
+DROP VIEW IF EXISTS `chat_view`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `chat_view` AS select `chat`.`chat_id` AS `chat_id`,`chat`.`chat_send` AS `chat_send`,`a`.`username` AS `send_name`,`a`.`headimage` AS `send_headimage`,`chat`.`chat_recive` AS `chat_recive`,`b`.`username` AS `recive_name`,`b`.`headimage` AS `recive_headimage`,`chat`.`chat_content` AS `chat_content`,`chat`.`is_read` AS `is_read`,`chat`.`chat_time` AS `chat_time` from ((`chat` join `tb_user` `a`) join `tb_user` `b`) where ((`chat`.`chat_send` = `a`.`userid`) and (`chat`.`chat_recive` = `b`.`userid`)) ;
 
 -- ----------------------------
 -- View structure for comment_view
 -- ----------------------------
 DROP VIEW IF EXISTS `comment_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `comment_view` AS select `comment`.`comment_id` AS `comment_id`,`comment`.`post_id` AS `post_id`,`comment`.`comment_content` AS `comment_content`,`comment`.`comment_level` AS `comment_level`,`comment`.`from_uid` AS `from_uid`,`comment`.`comment_nice_num` AS `comment_nice_num`,`comment`.`comment_date` AS `comment_date`,`tb_user`.`username` AS `username` from (`comment` join `tb_user`) where ((`tb_user`.`userid` = `comment`.`from_uid`) and (`comment`.`comment_level` = 0)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `comment_view` AS select `comment`.`comment_id` AS `comment_id`,`comment`.`post_id` AS `post_id`,`comment`.`comment_content` AS `comment_content`,`comment`.`comment_level` AS `comment_level`,`comment`.`from_uid` AS `from_uid`,`comment`.`comment_nice_num` AS `comment_nice_num`,`comment`.`comment_date` AS `comment_date`,`tb_user`.`username` AS `username`,`tb_user`.`headimage` AS `headimage` from (`comment` join `tb_user`) where ((`tb_user`.`userid` = `comment`.`from_uid`) and (`comment`.`comment_level` = 0)) ;
+
+-- ----------------------------
+-- View structure for my_comment_view
+-- ----------------------------
+DROP VIEW IF EXISTS `my_comment_view`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `my_comment_view` AS select `post`.`post_id` AS `post_id`,`post`.`post_content_text` AS `post_content_text`,`comment`.`comment_date` AS `comment_date`,`comment`.`from_uid` AS `from_uid`,`comment`.`comment_content` AS `comment_content` from (`comment` join `post`) where (`comment`.`post_id` = `post`.`post_id`) ;
 
 -- ----------------------------
 -- View structure for post_view
 -- ----------------------------
 DROP VIEW IF EXISTS `post_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `post_view` AS select `post`.`post_id` AS `post_id`,`post`.`post_from_id` AS `post_from_id`,`tb_user`.`username` AS `username`,`post`.`post_topic_id` AS `post_topic_id`,`topic`.`topic_content` AS `topic_content`,`post`.`post_content_text` AS `post_content_text`,`post`.`post_content_image` AS `post_content_image`,`post`.`post_date` AS `post_date`,`post`.`post_nice_num` AS `post_nice_num`,`post`.`post_comment_num` AS `post_comment_num` from ((`post` join `tb_user`) join `topic`) where ((`post`.`post_from_id` = `tb_user`.`userid`) and (`post`.`post_topic_id` = `topic`.`topic_id`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `post_view` AS select `post`.`post_id` AS `post_id`,`post`.`post_from_id` AS `post_from_id`,`tb_user`.`headimage` AS `headimage`,`tb_user`.`username` AS `username`,`post`.`post_topic_id` AS `post_topic_id`,`topic`.`topic_content` AS `topic_content`,`post`.`post_content_text` AS `post_content_text`,`post`.`post_content_image` AS `post_content_image`,`post`.`post_date` AS `post_date`,`post`.`post_nice_num` AS `post_nice_num`,`post`.`post_comment_num` AS `post_comment_num` from ((`post` join `tb_user`) join `topic`) where ((`post`.`post_from_id` = `tb_user`.`userid`) and (`post`.`post_topic_id` = `topic`.`topic_id`)) ;
 
 -- ----------------------------
 -- View structure for second_comment_view
 -- ----------------------------
 DROP VIEW IF EXISTS `second_comment_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `second_comment_view` AS select `comment`.`comment_id` AS `comment_id`,`comment`.`post_id` AS `post_id`,`comment`.`comment_content` AS `comment_content`,`comment`.`comment_level` AS `comment_level`,`comment`.`from_uid` AS `from_uid`,`comment`.`comment_nice_num` AS `comment_nice_num`,`comment`.`comment_date` AS `comment_date`,`tb_user`.`username` AS `username` from (`comment` join `tb_user`) where ((`tb_user`.`userid` = `comment`.`from_uid`) and (`comment`.`comment_level` > 0)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `second_comment_view` AS select `comment`.`comment_id` AS `comment_id`,`comment`.`post_id` AS `post_id`,`comment`.`comment_content` AS `comment_content`,`comment`.`comment_level` AS `comment_level`,`comment`.`from_uid` AS `from_uid`,`comment`.`comment_nice_num` AS `comment_nice_num`,`comment`.`comment_date` AS `comment_date`,`tb_user`.`username` AS `username`,`tb_user`.`headimage` AS `headimage` from (`comment` join `tb_user`) where ((`tb_user`.`userid` = `comment`.`from_uid`) and (`comment`.`comment_level` > 0)) ;
 DROP TRIGGER IF EXISTS `add_comment`;
 DELIMITER ;;
 CREATE TRIGGER `add_comment` AFTER INSERT ON `comment` FOR EACH ROW BEGIN
@@ -175,5 +273,20 @@ IF NEW.comment_level > 0 THEN
 INSERT INTO parent_child (parent_id,child_id) VALUES (New.comment_level,New.comment_id);
 END IF;
 END
+;;
+DELIMITER ;
+DROP TRIGGER IF EXISTS `add_remind`;
+DELIMITER ;;
+CREATE TRIGGER `add_remind` AFTER INSERT ON `comment` FOR EACH ROW begin
+declare user_name varchar(25);
+declare to_uid int;
+declare post_content varchar(255);
+if new.comment_level = 0 then
+set to_uid = (select post_from_id from post where post_id = new.post_id);
+set user_name = (select username from tb_user where userid = new.from_uid);
+set post_content = (select post_content_text from post where post_id = new.post_id);
+insert into remind (remind_from_name,remind_content,remind_to,remind_reason_type,remind_reason,remind_reason_content) values (user_name,new.comment_content,to_uid,1,new.post_id,post_content);
+end if;
+end
 ;;
 DELIMITER ;

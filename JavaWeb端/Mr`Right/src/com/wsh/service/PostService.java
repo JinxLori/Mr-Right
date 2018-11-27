@@ -29,4 +29,16 @@ public class PostService {
 	public int canclePostNiceNum(int postId,int userId) {
 		return postDao.canclePostNiceNum(postId,userId);
 	}
+//	根据post_id查询post
+	public List<Post> getPostByPostId(int post_id,int user_id){
+		return postDao.getPostByPostId(post_id,user_id);
+	}
+//	随机获取7条数据
+	public List<Post> getPostRand(int user_id){
+		return postDao.getPostRand(user_id);
+	}
+//	根据topic查询Topic
+	public List<Post> getPostByTopicID(int topic_id,int user_id) {
+		return postDao.getPostByTopicID(topic_id,user_id);
+	}
 }

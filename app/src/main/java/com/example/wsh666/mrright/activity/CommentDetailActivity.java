@@ -1,12 +1,19 @@
 package com.example.wsh666.mrright.activity;
 
+import android.app.Instrumentation;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.wsh666.mrright.R;
 import com.example.wsh666.mrright.adapter.CommentListAdepter;
 import com.example.wsh666.mrright.bean.Comment;
@@ -55,6 +63,18 @@ public class CommentDetailActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*沉浸式状态栏，不需要设置主题啥的了*/
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
         setContentView(R.layout.activity_comment_detail);
         initView();
         setAdapter();
@@ -86,7 +106,7 @@ public class CommentDetailActivity extends AppCompatActivity implements View.OnC
         Bundle bundle = this.getIntent().getExtras();
         comment = (Comment) bundle.getSerializable("comment");
 
-        comment_head_image.setImageResource(R.drawable.test);
+        Glide.with(CommentDetailActivity.this).load(comment.getHeadimage()).into(comment_head_image);
         comment_username.setText(comment.getUsername());
         comment_date.setText(comment.getComment_date());
         comment_up.setImageResource(R.drawable.up);
@@ -150,6 +170,23 @@ public class CommentDetailActivity extends AppCompatActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fanhui:
+                Toast.makeText(CommentDetailActivity.this, "返回", Toast.LENGTH_SHORT).show();
+                String_Util.comment_nice_num = Integer.parseInt(comment_up_num.getText().toString());
+                            /*发送广播给PostList界面更改信息*/
+                Intent braodcast = new Intent();
+                braodcast.setAction("action.refreshComment");
+                sendBroadcast(braodcast);
+                /*返回*/
+                new Thread() {
+                    public void run() {
+                        try {
+                            Instrumentation inst = new Instrumentation();
+                            inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
 
                 break;
             case R.id.comment_head_image:
@@ -234,6 +271,8 @@ public class CommentDetailActivity extends AppCompatActivity implements View.OnC
                                 int num = Integer.parseInt(comment_up_num.getText().toString());
                                 comment_up_num.setText(String.valueOf(num + 1));
                                 Toast.makeText(CommentDetailActivity.this, "点赞成功", Toast.LENGTH_SHORT).show();
+                                /*记录点赞状态*/
+                                String_Util.comment_is_nice = true;
                             } else {
                                 Toast.makeText(CommentDetailActivity.this, "点赞失败", Toast.LENGTH_SHORT).show();
                             }
@@ -274,6 +313,7 @@ public class CommentDetailActivity extends AppCompatActivity implements View.OnC
                                 int num = Integer.parseInt(comment_up_num.getText().toString());
                                 comment_up_num.setText(String.valueOf(num - 1));
                                 Toast.makeText(CommentDetailActivity.this, "取消赞", Toast.LENGTH_SHORT).show();
+                                String_Util.comment_is_nice=false;
                             } else {
                                 Toast.makeText(CommentDetailActivity.this, "操作失败", Toast.LENGTH_SHORT).show();
                             }
@@ -323,6 +363,8 @@ public class CommentDetailActivity extends AppCompatActivity implements View.OnC
                                 Toast.makeText(CommentDetailActivity.this, "评论成功", Toast.LENGTH_SHORT).show();
                                 SoftInputUtil.closeSoftInputFromWindow(CommentDetailActivity.this,comment_edit);
                                 setAdapter();//刷新评论列表
+                                /*添加一个评论就记录一下*/
+                                String_Util.added_comment_comment_num = String_Util.added_comment_comment_num+1;
                             } else {
                                 Toast.makeText(CommentDetailActivity.this, "评论失败", Toast.LENGTH_SHORT).show();
                             }

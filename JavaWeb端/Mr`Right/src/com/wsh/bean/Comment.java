@@ -10,6 +10,7 @@ public class Comment {
 	private int comment_nice_num;
 	private String comment_date;
 	private String username;
+	private String headimage;
 	private int second_comment_num;
 	private String is_nice;//数据库中没有的对象
 	
@@ -72,6 +73,12 @@ public class Comment {
 	}
 	public void setIs_nice(String is_nice) {
 		this.is_nice = is_nice;
+	}
+	public String getHeadimage() {
+		return headimage;
+	}
+	public void setHeadimage(String headimage) {
+		this.headimage = headimage;
 	}
 	
 	

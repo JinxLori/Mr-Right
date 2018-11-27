@@ -1,12 +1,23 @@
 package com.example.wsh666.mrright.activity;
 
 import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -75,20 +86,42 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
     Handler mHandler;
     Post post = new Post();
 
+    /*列表的数据以及适配器*/
+    List<Comment> commentList;
+    CommentListAdepter commentListAdepter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        /*沉浸式状态栏，不需要设置主题啥的了*/
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
         setContentView(R.layout.activity_post_detail);
+        /*注册刷新Commentlist的广播*/
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("action.refreshComment");
+        registerReceiver(mRefreshBroadcastReceiver, intentFilter);
+
         initView();
-        //setAdapter();
+        setAdapter();
     }
 
-    /*重写方法实现返回值后数据实时刷新*/
+    /*重写方法实现返回值后数据实时刷新*//*
     @Override
     protected void onResume() {
         super.onResume();
         setAdapter();
-    }
+    }*/
 
     private void initView() {
         fanhui = (ImageView) findViewById(R.id.fanhui);
@@ -148,7 +181,7 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
     }
 
     public void setAdapter() {
-        final List<Comment> commentList = new ArrayList<>();
+        commentList = new ArrayList<>();
         mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -159,7 +192,7 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
                         comment = (Comment) msg.getData().getSerializable("msg");
                         commentList.add(comment);
                         /*放在Hander里面，数据加载完成之后才会加载视图，不然会出现数据加载慢了之后视图得不到数据从而不显示*/
-                        CommentListAdepter commentListAdepter = new CommentListAdepter(commentList, PostDetailActivity.this);
+                        commentListAdepter = new CommentListAdepter(commentList, PostDetailActivity.this);
                         comment_list.setAdapter(commentListAdepter);
                         break;
                     default:
@@ -189,13 +222,48 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
                 }
             }
         }.start();
+
+        comment_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("comment",commentList.get(i));
+                Intent intent = new Intent();
+                intent.putExtras(bundle);
+                intent.setClass(PostDetailActivity.this, CommentDetailActivity.class);
+                startActivity(intent);
+
+                /*记住用户点击的评论的下标*/
+                String_Util.comment_index = i;
+                /*要将添加的评论数归零*/
+                String_Util.added_comment_comment_num = 0;
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fanhui:
+                Toast.makeText(this, "返回", Toast.LENGTH_SHORT).show();
+                /*更改静态变量的值*/
+                String_Util.post_nice_num = Integer.parseInt(up_num.getText().toString());
+                String_Util.post_comment_num = Integer.parseInt(pinglun_num.getText().toString());
+                /*发送广播给PostList界面更改信息*/
+                Intent braodcast = new Intent();
+                braodcast.setAction("action.refreshPost");
+                sendBroadcast(braodcast);
 
+                new Thread() {
+                    public void run() {
+                        try {
+                            Instrumentation inst = new Instrumentation();
+                            inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
                 break;
             case R.id.post_detail_head_image:
 
@@ -284,6 +352,7 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
                                 post_detail_btn_up.setImageResource(R.drawable.uped);
                                 int num = Integer.parseInt(up_num.getText().toString());
                                 up_num.setText(String.valueOf(num + 1));
+                                String_Util.post_is_nice = true;
                                 Toast.makeText(PostDetailActivity.this, "点赞成功", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(PostDetailActivity.this, "点赞失败", Toast.LENGTH_SHORT).show();
@@ -324,6 +393,7 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
                                 post_detail_btn_up.setImageResource(R.drawable.up);
                                 int num = Integer.parseInt(up_num.getText().toString());
                                 up_num.setText(String.valueOf(num - 1));
+                                String_Util.post_is_nice = false;
                                 Toast.makeText(PostDetailActivity.this, "取消赞", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(PostDetailActivity.this, "操作失败", Toast.LENGTH_SHORT).show();
@@ -368,6 +438,7 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
                                 Toast.makeText(PostDetailActivity.this, "评论成功", Toast.LENGTH_SHORT).show();
                                 SoftInputUtil.closeSoftInputFromWindow(PostDetailActivity.this,comment_edit);
                                 setAdapter();//刷新评论列表
+                                pinglun_num.setText(String.valueOf(Integer.parseInt(pinglun_num.getText().toString())+1));
                             } else {
                                 Toast.makeText(PostDetailActivity.this, "评论失败", Toast.LENGTH_SHORT).show();
                             }
@@ -378,5 +449,37 @@ public class PostDetailActivity extends Activity implements View.OnClickListener
                 e.printStackTrace();
             }
         }
+    }
+
+    /*接收发帖界面的广播，进行刷新列表的操作*/
+    // broadcast receiver
+    private BroadcastReceiver mRefreshBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals("action.refreshComment"))
+            {
+                Log.e("CommentList页面接收到评论详情广播","yes");
+                /*更改帖子的评论数*/
+                pinglun_num.setText(String.valueOf(Integer.parseInt(pinglun_num.getText().toString())+String_Util.added_comment_comment_num));
+                /*更改点击的评论的子评论数以及是否点赞状态*/
+                Comment comment = commentList.get(String_Util.comment_index);
+                comment.setSecond_comment_num(comment.getSecond_comment_num()+String_Util.added_comment_comment_num);
+                comment.setComment_nice_num(String_Util.comment_nice_num);
+                if(String_Util.comment_is_nice){
+                    comment.setIs_nice("true");
+                }else{
+                    comment.setIs_nice("false");
+                }
+                commentListAdepter.notifyDataSetChanged();
+            }
+        }
+    };
+
+    /*销毁碎片的同时销毁掉注册的广播*/
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mRefreshBroadcastReceiver);
     }
 }

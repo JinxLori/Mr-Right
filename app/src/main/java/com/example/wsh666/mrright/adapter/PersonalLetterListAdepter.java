@@ -8,8 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.wsh666.mrright.R;
-import com.example.wsh666.mrright.bean.PersonaLetter;
+import com.example.wsh666.mrright.bean.Chat;
 
 import java.util.List;
 
@@ -33,10 +34,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 public class PersonalLetterListAdepter extends BaseAdapter {
-    List<PersonaLetter> personaLetterList;
+    List<Chat> personaLetterList;
     Context context;
 
-    public PersonalLetterListAdepter(List<PersonaLetter> personaLetterList, Context context) {
+    public PersonalLetterListAdepter(List<Chat> personaLetterList, Context context) {
         this.personaLetterList = personaLetterList;
         this.context = context;
     }
@@ -58,7 +59,7 @@ public class PersonalLetterListAdepter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        PersonaLetter personaLetter=personaLetterList.get(i);
+        Chat personaLetter=personaLetterList.get(i);
         ViewHolder viewHolder;
         if(view==null){
             view = LayoutInflater.from(context).inflate(R.layout.personal_letter_listitem, viewGroup, false);
@@ -66,10 +67,11 @@ public class PersonalLetterListAdepter extends BaseAdapter {
             view.setTag(viewHolder);
         }
         viewHolder=(ViewHolder) view.getTag();
-        viewHolder.item_image.setImageResource(personaLetter.getImageId());
-        viewHolder.user.setText(personaLetter.getUsername());
-        viewHolder.one_message.setText(personaLetter.getOneMessage());
-        viewHolder.date.setText(personaLetter.getDate());
+//        viewHolder.item_image.setImageResource(personaLetter.getSend_headimage());
+        viewHolder.user.setText(personaLetter.getSend_name());
+        viewHolder.one_message.setText(personaLetter.getChat_content());
+        viewHolder.date.setText(personaLetter.getChat_time());
+        Glide.with(context).load(personaLetter.getSend_headimage()).into(viewHolder.item_image);
 
         viewHolder.item_image.setOnClickListener(new View.OnClickListener() {
             @Override

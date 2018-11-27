@@ -23,6 +23,7 @@ public class Comment implements Serializable{
     private int comment_id;
     private int post_id;
     private int from_uid;
+    private String headimage;
     private String username;
     private String comment_date;
     private String comment_content;
@@ -125,6 +126,31 @@ public class Comment implements Serializable{
 
     public void setIs_nice(String is_nice) {
         this.is_nice = is_nice;
+    }
+
+    public String getHeadimage() {
+        return headimage;
+    }
+
+    public void setHeadimage(String headimage) {
+        this.headimage = headimage;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "comment_id=" + comment_id +
+                ", post_id=" + post_id +
+                ", from_uid=" + from_uid +
+                ", headimage='" + headimage + '\'' +
+                ", username='" + username + '\'' +
+                ", comment_date='" + comment_date + '\'' +
+                ", comment_content='" + comment_content + '\'' +
+                ", comment_nice_num=" + comment_nice_num +
+                ", second_comment_num=" + second_comment_num +
+                ", comment_level=" + comment_level +
+                ", is_nice='" + is_nice + '\'' +
+                '}';
     }
 }
 

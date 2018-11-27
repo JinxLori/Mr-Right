@@ -35,13 +35,14 @@ public class GetImageAddressByImgstr extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		path = request.getRealPath("/") + "upload/";//服务器中图片文件夹
+		path = request.getRealPath("/") + "upload/";//服务器中图片文件夹,如果放在webApps目录下，重新发布会删除掉文件夹
+		//path = "F:/java基础工作区间/Mr`Right/WebContent/" + "upload/";
 		System.out.println(path);
 		request.setCharacterEncoding("utf-8"); 
 		response.setCharacterEncoding("utf-8"); 
 		PrintWriter out = response.getWriter(); 
 		String param = request.getParameter("param");
-		String imgStr2Image = imgStr2Image(param); 
+		String imgStr2Image = imgStr2Image(param);
 		out.print(imgStr2Image);
 		out.flush(); 
 		out.close();
@@ -64,7 +65,8 @@ public class GetImageAddressByImgstr extends HttpServlet {
 		long time = date.getTime();
 		String strName = time+".jpg";
 		String imgPath = path+strName;
-		String imgUrl = "http://192.168.1.4:8080/Mr_Right/upload/"+strName; //这里的192.168.1.4为以太网的ip地址，与安卓端不一样
+		String imgUrl = "http://192.168.191.1:8080/Mr_Right/upload/"+strName; 
+		//String imgUrl = "http://192.168.1.4:8080/Mr_Right/upload/"+strName;
 		try { 
 			byte[] bs = new BASE64Decoder().decodeBuffer(imgStr); 
 			for (int i = 0; i < bs.length; i++) {

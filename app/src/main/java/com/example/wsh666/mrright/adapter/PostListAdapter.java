@@ -15,9 +15,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.wsh666.mrright.R;
+import com.example.wsh666.mrright.activity.OtherUserActivity;
 import com.example.wsh666.mrright.activity.PostDetailActivity;
 import com.example.wsh666.mrright.bean.Post;
+import com.example.wsh666.mrright.my_view.MyImageDialog;
 import com.example.wsh666.mrright.util.String_Util;
 
 import java.io.ByteArrayOutputStream;
@@ -82,7 +85,7 @@ public class PostListAdapter extends BaseAdapter {
             view.setTag(viewHolder);
         }
         viewHolder = (ViewHolder) view.getTag();
-        viewHolder.list_head_image.setImageResource(R.drawable.test);
+        Glide.with(context).load(postList.get(i).getHeadimage()).into(viewHolder.list_head_image);
         viewHolder.list_username.setText(postList.get(i).getUsername());
         viewHolder.list_close.setImageResource(R.drawable.chacha);
         viewHolder.post_content.setText(postList.get(i).getPost_content_text());
@@ -116,6 +119,8 @@ public class PostListAdapter extends BaseAdapter {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Toast.makeText(context, imagesAddress.get(i), Toast.LENGTH_SHORT).show();
+                MyImageDialog myImageDialog = new MyImageDialog(context,R.style.DialogAnimation,0,0,imagesAddress.get(i));
+                myImageDialog.show();
             }
         });
         /*点赞事件处理*/
@@ -157,6 +162,9 @@ public class PostListAdapter extends BaseAdapter {
                 intent.putExtras(bundle);
                 intent.setClass(context, PostDetailActivity.class);
                 context.startActivity(intent);
+
+                /*记住点击的post的下标*/
+                String_Util.post_index = i;
             }
         });
         /*评论按钮点击事件*/
@@ -168,6 +176,19 @@ public class PostListAdapter extends BaseAdapter {
                 Intent intent = new Intent();
                 intent.putExtras(bundle);
                 intent.setClass(context, PostDetailActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
+        /*头像点击事件*/
+        viewHolder.list_head_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("post",postList.get(i));
+                Intent intent = new Intent();
+                intent.putExtras(bundle);
+                intent.setClass(context, OtherUserActivity.class);
                 context.startActivity(intent);
             }
         });

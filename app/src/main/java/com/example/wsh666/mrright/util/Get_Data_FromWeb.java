@@ -1,7 +1,5 @@
 package com.example.wsh666.mrright.util;
 
-import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +42,7 @@ public class Get_Data_FromWeb {
                 stringBuffer.append(sread);
                 stringBuffer.append("\r\n");
             }
-            Log.e("Get_Data_FromWeb", stringBuffer.toString());
+//            Log.e("Get_Data_FromWeb", stringBuffer.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

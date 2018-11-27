@@ -42,13 +42,15 @@ public class LoginServlet extends HttpServlet {
 		String username=request.getParameter("username");
 		String password=request.getParameter("password");
 		
-		User user=new User();
-		user.setUsername(username);
-		user.setPassword(password);
 		
 		UserService userService=new UserService();
-		User user1=userService.login(user);
-		response.getWriter().write(user1.getUsername()+" "+user1.getPassword());
+		int n = userService.login(username,password);
+		
+		if(n==0) {
+			response.getWriter().write(0+"");
+		}else {
+			response.getWriter().write(n+"");
+		}
 	}
 
 }

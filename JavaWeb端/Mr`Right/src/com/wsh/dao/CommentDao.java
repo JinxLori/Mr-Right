@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.smartcardio.CommandAPDU;
+
 import com.wsh.bean.Comment;
+import com.wsh.bean.CommentAndPost;
 import com.wsh.db.ConnDB;
 
 public class CommentDao {
@@ -35,6 +38,7 @@ public class CommentDao {
 				comment.setUsername(rs.getString(8));
 				comment.setComment_nice_num(rs.getInt(6));
 				comment.setComment_date(rs.getString(7));
+				comment.setHeadimage(rs.getString(9));
 				
 //				得到每一个评论的子评论数
 				String sql_find_second_comment_num = "select count(parent_id) from parent_child where parent_id = ?";
@@ -64,7 +68,7 @@ public class CommentDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-			ConnDB.closeConn(rs, ps, conn);
+			/*ConnDB.closeConn(rs, ps, conn);*/
 		}
 		return comments;
 	}
@@ -88,6 +92,7 @@ public class CommentDao {
 				comment.setComment_nice_num(rs.getInt(6));
 				comment.setComment_date(rs.getString(7));
 				comment.setUsername(rs.getString(8));
+				comment.setHeadimage(rs.getString(9));
 				
 //				判断是否已被该用户点赞
 				comment.setIs_nice("false");
@@ -205,8 +210,36 @@ public class CommentDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally {
-			
+//			ConnDB.closeConn(rs, ps, conn);
 		}
 		return uidList;
+	}
+	
+	
+//	根据用户id查询评论
+	public List<CommentAndPost> getCommentByUserId(int userId) {
+		List<CommentAndPost> commentAndPosts = new ArrayList<CommentAndPost>();
+		try {
+			conn = ConnDB.openConn();
+			String sql_getUid = "SELECT * FROM `my_comment_view` WHERE from_uid = ?";
+			PreparedStatement psStatement = conn.prepareStatement(sql_getUid);
+			psStatement.setInt(1,userId);
+			ResultSet rsResultSet = psStatement.executeQuery();
+			while(rsResultSet.next()) {
+				CommentAndPost commentAndPost = new CommentAndPost();
+				commentAndPost.setPostId(rsResultSet.getInt("post_id"));
+				commentAndPost.setPost_content_text(rsResultSet.getString("post_content_text"));
+				commentAndPost.setFrom_uid(rsResultSet.getInt("from_uid"));
+				commentAndPost.setComment_content(rsResultSet.getString("comment_content"));
+				commentAndPost.setComment_date(rsResultSet.getString("comment_date"));
+				commentAndPosts.add(commentAndPost);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			/*ConnDB.closeConn(rs, ps, conn);*/
+		}
+		return commentAndPosts;
 	}
 }

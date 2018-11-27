@@ -1,21 +1,27 @@
 package com.example.wsh666.mrright.activity;
 
+import android.app.Instrumentation;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -23,8 +29,13 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.wsh666.mrright.R;
+import com.example.wsh666.mrright.adapter.TopicListAdapter;
+import com.example.wsh666.mrright.bean.Topic;
+import com.example.wsh666.mrright.util.Get_Data_FromWeb;
 import com.example.wsh666.mrright.util.String_Util;
 import com.example.wsh666.mrright.util.UploadImagesUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.scrat.app.selectorlibrary.ImageSelector;
 
 import java.io.ByteArrayOutputStream;
@@ -66,10 +77,22 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     private Button clear_image;
     private TableLayout image_table;
 
+    private ListView choseTopicListView;
+
+    private TextView topic_text;
+
     private List<String> paths;//选取的图片的本机路径
     private List<ImageView> imageViews= new ArrayList<>();
     private List<String> images = new ArrayList<>();//图片转换为String的集合
     private String photoUrls = "";//得到的服务器图片的地址，
+
+    private Handler mHandler;
+    TopicListAdapter topicListAdapter;
+    List<Topic> topicList;
+
+    int topic_id;
+    String topic_content;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +122,8 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         select_image = (Button) findViewById(R.id.select_image);
         clear_image = (Button) findViewById(R.id.clear_image);
         image_table=(TableLayout)findViewById(R.id.image_table);
+        choseTopicListView = (ListView) findViewById(R.id.choose_topic);
+        topic_text = (TextView) findViewById(R.id.topic);
 
         fanhui.setOnClickListener(this);
         chose_topic.setOnClickListener(this);
@@ -164,10 +189,50 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fanhui:
-
+                new Thread() {
+                    public void run() {
+                        try {
+                            Instrumentation inst = new Instrumentation();
+                            inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
                 break;
             case R.id.chose_topic://选择话题
-
+                choseTopicListView.setVisibility(View.VISIBLE);
+                topicList = new ArrayList<>();
+                GetTopicThread getTopicThread = new GetTopicThread();
+                getTopicThread.start();
+                mHandler = new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        super.handleMessage(msg);
+                        switch (msg.what) {
+                            case 1:
+                                Topic topic = new Topic();
+                                topic = (Topic) msg.getData().getSerializable("msg");
+                                topicList.add(topic);
+                                topicListAdapter = new TopicListAdapter(topicList, WritePostActivity.this);
+                                choseTopicListView.setAdapter(topicListAdapter);
+                                Log.e("gettopic", topic.toString());
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                };
+                choseTopicListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        topic_id = topicList.get(i).getTopic_id();
+                        topic_content = topicList.get(i).getTopic_content();
+                        choseTopicListView.setVisibility(View.GONE);
+                        topic_text.setVisibility(View.VISIBLE);
+                        topic_text.setText(topic_content);
+                    }
+                });
                 break;
             case R.id.select_image://选择照片
                 ImageSelector.show(this, REQUEST_CODE_SELECT_IMG, MAX_SELECT_COUNT);
@@ -182,13 +247,24 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                 UploadImagesThread uploadImagesThread = new UploadImagesThread(imgstrs);
                 uploadImagesThread.start();
                 try {
-                    uploadImagesThread.join();//保证图片上传并得到返回的地址之后再运行上传帖子的线程
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                uploadImagesThread.join();//保证图片上传并得到返回的地址之后再运行上传帖子的线程
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
                 /*上传帖子的线程*/
                 AddPostThread addPostThread = new AddPostThread();
                 addPostThread.start();
+                /*成功之后返回*/
+                new Thread() {
+                    public void run() {
+                        try {
+                            Instrumentation inst = new Instrumentation();
+                            inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
                 break;
         }
     }
@@ -206,11 +282,10 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         public void run() {
             try {
                 int userId = String_Util.userId;
-                int topicId = 1;//获取话题的id
+                /*int topicId = 1;//获取话题的id*/
 //               /*这里要将中文当做数据传入URL，需要先对其进行编码，不然传递过去的是乱码*/
                 String post_content = URLEncoder.encode(edit_post.getText().toString(),"utf-8");
-//                Log.e("AddPostThread",photoUrls+" ");
-                String path = String_Util.urlString + "AddPost?post_from_id="+userId+"&post_topic_id="+topicId+"&post_content_text="+post_content+"&post_content_image="+photoUrls;
+                String path = String_Util.urlString + "AddPost?post_from_id="+userId+"&post_topic_id="+topic_id+"&post_content_text="+post_content+"&post_content_image="+photoUrls;
                 URL url = new URL(path);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
@@ -224,6 +299,19 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
                         baos.write(buffer, 0, len);
                     }
                     final String result = baos.toString();
+                    if (result.equals("1")) {
+
+                        // 发布成功 需要广播通知帖子界面刷新列表
+                        /*在发布广播之前，需要将广播接收之后需要的信息存在全局静态变量中*/
+                        String_Util.post_content_text=edit_post.getText().toString();
+                        String_Util.post_image=photoUrls;
+                        String_Util.post_topic=topic_content;
+
+                        Intent broadcast = new Intent();
+                        broadcast.setAction("action.refreshPostList");
+                        sendBroadcast(broadcast);
+
+                    }
                     /*UI界面操作*/
                     runOnUiThread(new Runnable() {
                         @Override
@@ -277,6 +365,37 @@ public class WritePostActivity extends AppCompatActivity implements View.OnClick
         /*for(int i=0;i<images.size();i++){
             Log.e("WritePostActivity2",i+"-"+images.get(i));
         }*/
+    }
+
+    /*得到所有话题的线程*/
+    public class GetTopicThread extends Thread{
+        @Override
+        public void run() {
+            Get_Data_FromWeb get_data_fromWeb = new Get_Data_FromWeb();
+            String jsonData = get_data_fromWeb.getData(String_Util.urlString + "GetTopic");
+            Gson gson = new Gson();
+            List<Topic> topics = gson.fromJson(jsonData,
+                    new TypeToken<List<Topic>>() {
+                    }.getType());
+            if (topics == null) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(WritePostActivity.this, "请求数据失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                for (Topic topic : topics) {
+                    Log.e("topic", topic.toString());
+                    Message message = new Message();
+                    message.what = 1;//判断是哪个handler的请求
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("msg", topic);
+                    message.setData(bundle);
+                    mHandler.sendMessage(message);
+                }
+            }
+        }
     }
     private void submit() {
         String post = edit_post.getText().toString().trim();

@@ -4,11 +4,16 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -30,10 +35,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.wsh666.mrright.R;
+import com.example.wsh666.mrright.bean.Chat;
+import com.example.wsh666.mrright.bean.Reminds;
 import com.example.wsh666.mrright.tab_fragment.Tab_Find_Fragment;
 import com.example.wsh666.mrright.tab_fragment.Tab_Message_Fragment;
 import com.example.wsh666.mrright.tab_fragment.Tab_Personal_Fragment;
 import com.example.wsh666.mrright.tab_fragment.Tab_Recommed_Fragment;
+import com.example.wsh666.mrright.util.Get_Data_FromWeb;
+import com.example.wsh666.mrright.util.String_Util;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -61,6 +75,7 @@ public class MainActivity extends AppCompatActivity
     private RadioButton tab_recommed;
     private RadioButton tab_find;
     private RadioButton tab_message;
+    private CircleImageView n;
     private RadioButton tab_personal;
     private RadioGroup bottom_bar;
     private ImageView show_dialog;
@@ -79,6 +94,12 @@ public class MainActivity extends AppCompatActivity
     private CircleImageView head_image;
 
     private FrameLayout fill_fragment;
+
+    Handler chat_mHandler;
+    List<Chat> chatList;
+
+    Handler remind_mHandler;
+    List<Reminds> remindList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +121,16 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
         fragmentManager = getFragmentManager();
+
+        /*接收ChatActivity的广播*/
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("action.refreshRed");
+        registerReceiver(mRefreshBroadcastReceiver, intentFilter);
+
         initView();
+
+        sixin();
+        tixing();
     }
 
     private void initView() {
@@ -108,6 +138,7 @@ public class MainActivity extends AppCompatActivity
         tab_recommed = (RadioButton) findViewById(R.id.tab_recommed);
         tab_find = (RadioButton) findViewById(R.id.tab_find);
         tab_message = (RadioButton) findViewById(R.id.tab_message);
+        n = (CircleImageView) findViewById(R.id.n);
         tab_personal = (RadioButton) findViewById(R.id.tab_personal);
         bottom_bar = (RadioGroup) findViewById(R.id.bottom_bar);
         show_dialog = (ImageView) findViewById(R.id.show_dialog);
@@ -186,7 +217,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.tab_personal:
                 if (f_personal == null) {
                     f_personal = new Tab_Personal_Fragment();
-                    fragmentTransaction.add(R.id.frame, f_personal);
+                    fragmentTransaction.add(R.id.frame, f_personal,"personal");
                 } else {
                     fragmentTransaction.show(f_personal);
                 }
@@ -221,6 +252,55 @@ public class MainActivity extends AppCompatActivity
         dialogWindow.setAttributes(lp);
         mCameraDialog.show();
     }
+
+    /*私信界面的操作*/
+    public void sixin(){
+        chatList = new ArrayList<>();
+        GetChatByUserIdThread getChatByUserIdThread = new GetChatByUserIdThread();
+        getChatByUserIdThread.start();
+        chat_mHandler=new Handler(){
+            @Override
+            public void handleMessage(Message msg)
+            {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case 1:
+                        Chat chat = new Chat();
+                        chat = (Chat) msg.getData().getSerializable("msg");
+                        chatList.add(chat);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+        };
+    }
+
+    /*提醒界面的操作*/
+    public void tixing(){
+        remindList = new ArrayList<>();
+        GetRemindByUserIdThread getRemindByUserIdThread = new GetRemindByUserIdThread();
+        getRemindByUserIdThread.start();
+        remind_mHandler=new Handler(){
+            @Override
+            public void handleMessage(Message msg)
+            {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case 1:
+                        Reminds remind = new Reminds();
+                        remind = (Reminds) msg.getData().getSerializable("msg");
+                        remindList.add(remind);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+        };
+    }
+
 
     @Override
     public void onClick(View view) {
@@ -309,5 +389,113 @@ public class MainActivity extends AppCompatActivity
         //模拟返回栈 防止退出碎片时也退出活动
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    /*根据接收人得到聊天的信息线程*/
+    private class GetChatByUserIdThread extends Thread{
+        @Override
+        public void run(){
+            while(true){
+                try {
+                    Thread.sleep(1000);
+                    Get_Data_FromWeb get_data_fromWeb = new Get_Data_FromWeb();
+                    String jsonData = get_data_fromWeb.getData(String_Util.urlString+"GetChatByUserId?userid="+ String_Util.userId);
+                    Gson gson = new Gson();
+                    List<Chat> chats = gson.fromJson(jsonData,
+                            new TypeToken<List<Chat>>() {}.getType());
+                    if(chats==null){
+
+                    }else{
+                        for(Chat chat : chats) {
+//                            Log.e("Chat" , chat.toString());
+                            if(chat.getIs_read()==0){
+//                                Log.e("Is_read",chat.getSend_name());
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        n.setVisibility(View.VISIBLE);
+                                    }
+                                });
+
+                                // 广播通知私信界面刷新列表
+                                Intent intent = new Intent();
+                                intent.setAction("action.refreshPersonLetterList");
+                                sendBroadcast(intent);
+                            }
+                            Message message=new Message();
+                            message.what=1;//判断是哪个handler的请求
+                            Bundle bundle=new Bundle();
+                            bundle.putSerializable("msg",chat);
+                            message.setData(bundle);
+                            chat_mHandler.sendMessage(message);
+
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /*得到提醒的信息线程*/
+    private class GetRemindByUserIdThread extends Thread{
+        @Override
+        public void run(){
+            while(true){
+                try {
+                    Thread.sleep(1000);
+                    Get_Data_FromWeb get_data_fromWeb = new Get_Data_FromWeb();
+                    String jsonData = get_data_fromWeb.getData(String_Util.urlString+"GetRemindByUserIdServlet?userid="+ String_Util.userId);
+                    Gson gson = new Gson();
+                    List<Reminds> remindses = gson.fromJson(jsonData,
+                            new TypeToken<List<Reminds>>() {}.getType());
+                    if(remindses==null){
+
+                    }else{
+                        for(Reminds remind : remindses) {
+//                        Log.e("Remind" , remind.toString());
+                            if(remind.getIs_read()==0){
+//                            Log.e("Is_read",remind.getRemind_content());
+                            /*runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tab_message.setText("111");
+                                }
+                            });*/
+                            }
+                            Message message=new Message();
+                            message.what=1;//判断是哪个handler的请求
+                            Bundle bundle=new Bundle();
+                            bundle.putSerializable("msg",remind);
+                            message.setData(bundle);
+                            remind_mHandler.sendMessage(message);
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    // broadcast receiver
+    private BroadcastReceiver mRefreshBroadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals("action.refreshRed"))
+            {
+             n.setVisibility(View.GONE);
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mRefreshBroadcastReceiver);
     }
 }

@@ -7,9 +7,10 @@ public class User {
 	private int userid;
 	private String username;
 	private String password;
+	private String headimage;
 	private String phonenumber;
 	private String sex;
-	private Date birthday;
+	private String birthday;
 	private String sign;
 	public int getUserid() {
 		return userid;
@@ -29,6 +30,12 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	public String getHeadimage() {
+		return headimage;
+	}
+	public void setHeadimage(String headimage) {
+		this.headimage = headimage;
+	}
 	public String getPhonenumber() {
 		return phonenumber;
 	}
@@ -41,10 +48,10 @@ public class User {
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
-	public Date getBirthday() {
+	public String getBirthday() {
 		return birthday;
 	}
-	public void setBirthday(Date birthday) {
+	public void setBirthday(String birthday) {
 		this.birthday = birthday;
 	}
 	public String getSign() {

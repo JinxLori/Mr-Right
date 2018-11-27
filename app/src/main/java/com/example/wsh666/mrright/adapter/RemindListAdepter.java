@@ -6,14 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.wsh666.mrright.R;
-import com.example.wsh666.mrright.bean.Remind;
+import com.example.wsh666.mrright.bean.Reminds;
 
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by wsh666 on 2018/9/27.
@@ -33,10 +30,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 public class RemindListAdepter extends BaseAdapter {
-    List<Remind> remindList;
+    List<Reminds> remindList;
     Context context;
 
-    public RemindListAdepter(List<Remind> remindList, Context context) {
+    public RemindListAdepter(List<Reminds> remindList, Context context) {
         this.remindList = remindList;
         this.context = context;
     }
@@ -58,7 +55,7 @@ public class RemindListAdepter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        Remind remind=remindList.get(i);
+        Reminds remind=remindList.get(i);
         ViewHolder viewHolder;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.remind_listitem, viewGroup, false);
@@ -66,30 +63,24 @@ public class RemindListAdepter extends BaseAdapter {
             view.setTag(viewHolder);
         }
         viewHolder=(ViewHolder) view.getTag();
-        viewHolder.item_image.setImageResource(remind.getImageId());
-        viewHolder.remind_name.setText(remind.getUsername());
-        viewHolder.remind_content.setText(remind.getContent());
-
-        viewHolder.item_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(context, "用户详情", Toast.LENGTH_SHORT).show();
-            }
-        });
+        /*viewHolder.item_image.setImageResource(remind.getImageId());*/
+        viewHolder.remind_name.setText(remind.getRemind_from_name());
+        viewHolder.remind_content.setText(remind.getRemind_content());
+        viewHolder.remind_reason.setText(remind.getRemind_reason_content());
         return view;
     }
 
     class ViewHolder {
         View rootView;
-        CircleImageView item_image;
         TextView remind_name;
         TextView remind_content;
+        TextView remind_reason;
 
         public ViewHolder(View rootView) {
             this.rootView = rootView;
-            this.item_image = (CircleImageView) rootView.findViewById(R.id.item_image);
             this.remind_name = (TextView) rootView.findViewById(R.id.remind_name);
             this.remind_content = (TextView) rootView.findViewById(R.id.remind_content);
+            this.remind_reason = (TextView) rootView.findViewById(R.id.remind_reason);
         }
 
     }
